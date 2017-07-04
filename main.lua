@@ -12,6 +12,7 @@ grid = require("modules.grid")
 tile = require("modules.tile")
 game = require("modules.game")
 hud = require("modules.hud")
+touch = require("modules.touch")
 
 --all main does is go to the first scene
 composer.gotoScene("scenes.scene_game")

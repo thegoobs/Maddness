@@ -1,8 +1,8 @@
 local touch = {}
 touch.points = {} --stores points
 
-function touch:addPoint(xpos, ypos)
-	table.insert(touch.points, {x=xpos, y=ypos})
+function touch:addPoint(t) --t for tile
+	table.insert(touch.points, t)
 end
 
 return touch
