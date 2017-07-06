@@ -6,7 +6,7 @@ game.score = 0
 game.ctr = 0
 
 function game:start()
-	game.score = 1
+	game.score = 0
 	game.ctr = 0
 
 	--make grid
@@ -23,6 +23,10 @@ end
 
 function game:unpause()
 
+end
+
+function game:updateScore(s)
+	game.score = game.score + s
 end
 
 return game

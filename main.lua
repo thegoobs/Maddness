@@ -14,5 +14,6 @@ game = require("modules.game")
 hud = require("modules.hud")
 touch = require("modules.touch")
 
+debug = 0
 --all main does is go to the first scene
 composer.gotoScene("scenes.scene_game")
