@@ -13,7 +13,9 @@ tile = require("modules.tile")
 game = require("modules.game")
 hud = require("modules.hud")
 touch = require("modules.touch")
+combination = require("modules.combination")
+widget = require("widget")
 
 debug = 0
 --all main does is go to the first scene
-composer.gotoScene("scenes.scene_game")
+composer.gotoScene("scenes.scene_menu")
