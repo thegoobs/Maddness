@@ -5,6 +5,10 @@ game.state = "NOT GAME"
 game.score = 0
 game.ctr = 0
 game.group = display.newGroup()
+game.rows = 6
+game.columns = 5
+game.min = -5
+game.max = 5
 
 function game:start()
 	game.score = 0
@@ -22,8 +26,8 @@ function game:makeGroup()
 	game.group = display.newGroup()
 
 	--add tiles to group
-	for i = 1, 5 do
-		for i = 1, 7 do
+	for i = 1, game.columns do
+		for i = 1, game.rows do
 			game.group:insert(grid[i][j])
 		end
 	end
@@ -35,6 +39,7 @@ function game:makeGroup()
 end
 
 function game:remove()
+	print("get out")
 	game.score = 0
 	game.tr = 0
 
@@ -50,6 +55,26 @@ end
 
 function game:unpause()
 
+end
+
+--shake function for any display object
+function game:shake(obj)
+	local offset = 4
+	local xpos, ypos = obj:localToContent( 0, 0 )
+	transition.to(obj, {
+		time = 50,
+		x = xpos + offset
+		})
+	transition.to(obj, {
+		time = 50,
+		delay = 50,
+		x = xpos - offset
+		})
+	transition.to(obj, {
+		time = 50,
+		delay = 100,
+		x = xpos
+		})
 end
 
 function game:updateScore(s)

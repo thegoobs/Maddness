@@ -4,9 +4,9 @@ grid.lastTouched = nil
 
 function grid:create()
 	--math.randomseed(os.time())
-	for i = 1, 5 do
+	for i = 1, game.columns do
 		grid[i] = {}
-		for j = 1, 7 do
+		for j = 1, game.rows do
 			timer.performWithDelay(15 * i * j, function() grid[i][j] = tile:create(i,j) end)
 		end
 	end
@@ -14,8 +14,8 @@ end
 
 function grid:remove()
 	if game.state == "GAME" then
-		for i = 1, 5 do
-			for j = 1, 7 do
+		for i = 1, game.columns do
+			for j = 1, game.rows do
 				timer.performWithDelay(15 * i * j, function()
 					transition.to(grid[i][j], {time = 100, alpha = 0, y = 25, onComplete = function()
 						grid[i][j]:removeSelf()
@@ -32,9 +32,9 @@ end
 
 function grid:fall()
 	local maxtime = 0
-	for i = 1, 5 do
+	for i = 1, game.columns do
 		local ctr = 0
-		for j = 7,1,-1 do
+		for j = game.rows,1,-1 do
 			if grid[i][j] == nil then
 				for k = j, 1, -1 do
 					local temp = grid[i][k]
@@ -44,40 +44,49 @@ function grid:fall()
 						grid[i][j].ypos = j
 
 						local x, y = grid[i][j]:localToContent(0, 0)
-						if maxtime < 200 + 100 * (7 - j) then maxtime = 200 + 100 * (7 - j) end
+						if maxtime < 200 + 100 * (game.rows - j) then maxtime = 200 + 100 * (game.rows - j) end
 						ctr = ctr + 1
-						transition.to(grid[i][j], {time = 200 + 100 * (j - k) + 40*ctr, y = y + 50 * (j - k), transition = easing.inSine})
+						transition.to(grid[i][j], {time = 200 + 100 * (j - k) + 40*ctr, y = y + 55 * (j - k), transition = easing.inSine})
 						break
 					end
 				end
 			end
 		end
 	end
-	timer.performWithDelay(maxtime, function() res = grid:repopulate() end)
+	if game.state == "COMPUTE" then
+		game.state = "REPOPULATE"
+		timer.performWithDelay(maxtime, function() grid:repopulate() end)
+	else
+		game.state = "CLEANUP"
+		timer.performWithDelay(maxtime, function() grid:repopulate() end)
+	end
 end
 
 function grid:repopulate()
-	ctr = 0
-	for i = 1, 5 do
-			for j = 1, 7 do
+	ctr = 1
+	for i = 1, game.columns do
+			for j = 1, game.rows do
 			if grid[i][j] ~= nil then break end
 			ctr = ctr + 1
-			timer.performWithDelay(40 * ctr, function() grid[i][j] = tile:create(i, j) end)
+			timer.performWithDelay(80 * ctr, function() grid[i][j] = tile:create(i, j) end)
 		end
 	end
 
 	touch.points = {}
 	grid.lastTouched = nil
-	game.state = "GAME"
-	timer.performWithDelay(2000, function() grid:test() end)
+	if game.state == "REPOPULATE" then
+		timer.performWithDelay(150 * (ctr + 1), function() grid:powerups() end)
+	else
+		timer.performWithDelay(100 * (ctr + 1), function() game.state = "GAME" end)
+	end
 end
 
 function grid:clearDisabled(x, y)
-	if x < 5 and grid[x + 1][y] ~= nil then
+	if x < game.columns and grid[x + 1][y] ~= nil then
 		if grid[x + 1][y].disabled == true then
 			grid[x + 1][y].disabled = false
 			transition.to(grid[x + 1][y], {time = 250, alpha = 1})
-			grid[x + 1][y].rect:setFillColor(1,1,1)
+			grid[x + 1][y].rect:setFillColor(unpack(grid[x + 1][y].color))
 		end
 	end
 
@@ -85,15 +94,15 @@ function grid:clearDisabled(x, y)
 		if grid[x - 1][y].disabled == true then
 			grid[x - 1][y].disabled = false
 			transition.to(grid[x - 1][y], {time = 250, alpha = 1})
-			grid[x - 1][y].rect:setFillColor(1,1,1)
+			grid[x - 1][y].rect:setFillColor(unpack(grid[x - 1][y].color))
 		end
 	end
 
-	if y < 7 and grid[x][y + 1] ~= nil then
+	if y < game.rows and grid[x][y + 1] ~= nil then
 		if grid[x][y + 1].disabled == true then
 			grid[x][y + 1].disabled = false
 			transition.to(grid[x][y + 1], {time = 250, alpha = 1})
-			grid[x][y+1].rect:setFillColor(1,1,1)
+			grid[x][y + 1].rect:setFillColor(unpack(grid[x][y + 1].color))
 		end
 	end
 	
@@ -101,9 +110,19 @@ function grid:clearDisabled(x, y)
 		if grid[x][y - 1].disabled == true then
 			grid[x][y - 1].disabled = false
 			transition.to(grid[x][y - 1], {time = 250, alpha = 1})
-			grid[x][y - 1].rect:setFillColor(1,1,1)
+			grid[x][y - 1].rect:setFillColor(unpack(grid[x][y - 1].color))
 		end
 	end
+end
+
+function grid:powerups()
+	game.state = "POWERUPS"
+	for i = 1, #touch.powerups do
+		tile:activate(touch.powerups[i], false)
+	end
+
+	touch.powerups = {}
+	grid:fall()
 end
 
 function grid:compute()
@@ -149,23 +168,43 @@ function grid:compute()
 				game.ctr = 0
 				grid.lastTouched = nil
 				game.state = "GAME"
-				timer.performWithDelay(2000, function() grid:test() end)
+				touch.powerups = {}
+				timer.performWithDelay(1000, function() grid:test() end)
+			end
+		end
+	}
+	
+	local powerup = {
+		time = 100,
+		onComplete = function()
+			grid[touch.points[i].xpos][touch.points[i].ypos].rect:setFillColor(0,1,0)
+			i = i + 1
+			if i > #touch.points then
+				timer.performWithDelay(150, function() grid:fall() end)
 			end
 		end
 	}
 
-	if game.ctr == 0 then
+	if game.ctr == 0 and #touch.points > 0 then
 		game.state = "COMPUTE"
-		timer.performWithDelay(100, function() transition.to(touch.points[i], success) end, #touch.points)
+		timer.performWithDelay(125, function()
+			if touch.points[i].powerup == false then
+				transition.to(touch.points[i], success)
+			else
+				transition.to(touch.points[i], powerup)
+			end
+		end, #touch.points)
+	elseif game.ctr ~= 0 and #touch.points > 0 then
+		game.state = "COMPUTE"
+		timer.performWithDelay(125, function() transition.to(touch.points[i], fail) end, #touch.points)
 	else
-		game.state = "COMPUTE"
-		timer.performWithDelay(100, function() transition.to(touch.points[i], fail) end, #touch.points)
+		grid:fall()
 	end
 end
 
 function grid:test()
-	for i = 1, 5 do
-		for j = 1, 7 do
+	for i = 1, game.columns do
+		for j = 1, game.rows do
 			--print("starting at: " .. i .. " " .. j .. " is it disabled? " .. tostring(grid[i][j].disabled))
 			if grid[i][j].disabled == false then
 				if combination:findzero(i, j, 0) == true then
@@ -174,7 +213,7 @@ function grid:test()
  			end
 		end
 	end
-	print("no possible moves")
+	composer.gotoScene("scenes.scene_menu")
 	return false
 end
 

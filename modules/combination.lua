@@ -9,6 +9,12 @@ function combination.previouslyUsed(t)
 		end
 	end
 
+	for i, obj in ipairs(touch.powerups) do
+		if t == obj then
+			return true
+		end
+	end
+
 	return false
 end
 
@@ -20,24 +26,39 @@ function combination.findNeighbors(x, y)
 
 	--test corners
 	if x == 1 then l = false
-	elseif x == 5 then r = false end
+	elseif x == game.columns then r = false end
 
 	if y == 1 then t = false
-	elseif y == 7 then b = false end
+	elseif y == game.rows then b = false end
 
 	local neighbors = {}
 
-	if l == true and grid[x - 1][y].disabled == false and combination.previouslyUsed(grid[x - 1][y]) == false then
-		table.insert(neighbors,grid[x - 1][y])
-	end
-	if r == true and grid[x + 1][y].disabled == false and combination.previouslyUsed(grid[x + 1][y]) == false then
-		table.insert(neighbors,grid[x + 1][y])
-	end
-	if t == true and grid[x][y - 1].disabled == false and combination.previouslyUsed(grid[x][y - 1]) == false then
-		table.insert(neighbors,grid[x][y - 1])
-	end
-	if b == true and grid[x][y + 1].disabled == false and combination.previouslyUsed(grid[x][y + 1]) == false then
-		table.insert(neighbors,grid[x][y + 1])
+	if grid[x][y].powerup == false then
+		if l == true and grid[x - 1][y].disabled == false and combination.previouslyUsed(grid[x - 1][y]) == false then
+			table.insert(neighbors,grid[x - 1][y])
+		end
+		if r == true and grid[x + 1][y].disabled == false and combination.previouslyUsed(grid[x + 1][y]) == false then
+			table.insert(neighbors,grid[x + 1][y])
+		end
+		if t == true and grid[x][y - 1].disabled == false and combination.previouslyUsed(grid[x][y - 1]) == false then
+			table.insert(neighbors,grid[x][y - 1])
+		end
+		if b == true and grid[x][y + 1].disabled == false and combination.previouslyUsed(grid[x][y + 1]) == false then
+			table.insert(neighbors,grid[x][y + 1])
+		end
+	else
+		if l == true and combination.previouslyUsed(grid[x - 1][y]) == false then
+			table.insert(neighbors,grid[x - 1][y])
+		end
+		if r == true and combination.previouslyUsed(grid[x + 1][y]) == false then
+			table.insert(neighbors,grid[x + 1][y])
+		end
+		if t == true and combination.previouslyUsed(grid[x][y - 1]) == false then
+			table.insert(neighbors,grid[x][y - 1])
+		end
+		if b == true and combination.previouslyUsed(grid[x][y + 1]) == false then
+			table.insert(neighbors,grid[x][y + 1])
+		end
 	end
 
 	return neighbors
