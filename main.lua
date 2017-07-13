@@ -15,6 +15,9 @@ hud = require("modules.hud")
 touch = require("modules.touch")
 combination = require("modules.combination")
 widget = require("widget")
+bomb = require("modules.powerups.bomb")
+vertical = require("modules.powerups.vertical")
+horizontal = require("modules.powerups.horizontal")
 
 debug = 0
 --all main does is go to the first scene

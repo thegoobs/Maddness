@@ -8,7 +8,7 @@ function tile:create(xpos, ypos)
 	t.color = {1,1,1}
 
 	--set value, check if power up
-	t.val = math.random(game.min, game.max)
+	t.val = math.random(-5,5)--game.min, game.max)
 	if t.val == 0 then
 		local r = math.random(1, 3)
 		if r == 1 then
@@ -82,88 +82,15 @@ end
 function tile:activate(t, RecursivelyCalled)
 	--if statements for each type of powerup
 	if t.powerup == "bomb" then
-		local neighbors = combination.findNeighbors(t.xpos, t.ypos)
-		if #neighbors > 0 then
-			for i = 1, #neighbors do --for each neighbor
-				if grid[neighbors[i].xpos][neighbors[i].ypos] ~= nil then
-					if neighbors[i].powerup == false then
-						neighbors[i]:removeSelf()
-						grid[neighbors[i].xpos][neighbors[i].ypos] = nil
-					else
-						table.insert(touch.powerups, neighbors[i])
-						tile:activate(neighbors[i], true)
-					end
-				else
-					print("this should not go off")
-				end
-			end
-		end
-
-		game.score = game.score + 10000
-		t:removeSelf()
-		grid[t.xpos][t.ypos] = nil
-
-		--shake grid
-		for i = 1, game.columns do
-			for j = 1, game.rows do
-				if grid[i][j] ~= nil then
-					game:shake(grid[i][j])
-				end
-			end
-		end
+		bomb:activate(t)
 	end
 
 	if t.powerup == "vertical" then
-		--get the column about to be destroyed
-		local column = {}
-		grid[t.xpos][t.ypos].powerup = false
-		for i = 1, game.rows do
-			if grid[t.xpos][i] ~= nil then
-				if grid[t.xpos][i].powerup == false then
-					table.insert(column, grid[t.xpos][i])
-				else
-					tile:activate(grid[t.xpos][i], true)
-				end
-			end
-		end
-
-		--kill the row by making game compute as if you chose this
-		local moveOn = false
-
-		for i = 1, #column do
-			transition.to(column[i], {time=100, alpha=0, onStart= function()
-				grid[column[i].xpos][column[i].ypos] = nil
-			end})
-		end
-		game.score = game.score + 10000
-		column = {}
+		vertical:activate(t)
 	end
 
 	if t.powerup == "horizontal" then
-		--get the row about to be destroyed
-		local row = {}
-		grid[t.xpos][t.ypos].powerup = false
-		for i = 1, game.columns do
-			if grid[i][t.ypos] ~= nil then
-				if grid[i][t.ypos].powerup == false then
-					table.insert(row, grid[i][t.ypos])
-				else
-					tile:activate(grid[i][t.ypos], true)
-				end
-			end
-		end
-
-		--kill the row by making game compute as if you chose this
-		local moveOn = false
-
-		for i = 1, #row do
-			transition.to(row[i], {time=100, alpha=0, onStart= function()
-				grid[row[i].xpos][row[i].ypos] = nil
-			end})
-		end
-		game.score = game.score + 10000
-		row = {}
-
+		horizontal:activate(t)
 	end
 
 end

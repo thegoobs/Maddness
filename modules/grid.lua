@@ -2,6 +2,13 @@ local grid = {}
 grid.transition = false
 grid.lastTouched = nil
 
+--dimensions for animation purposes
+grid.center = nil
+grid.top = nil
+grid.bottom = nil
+grid.left = nil
+grid.right = nil
+
 function grid:create()
 	--math.randomseed(os.time())
 	for i = 1, game.columns do
@@ -10,6 +17,11 @@ function grid:create()
 			timer.performWithDelay(15 * i * j, function() grid[i][j] = tile:create(i,j) end)
 		end
 	end
+	grid.center = {x = -5 + (55 * 3), y = -15 + (55 * 4)}
+	grid.top = -15 + (55 * 2)
+	grid.bottom = -15 + (55 * 6)
+	grid.left = 50
+	grid.right = -5 + (55 * 5)
 end
 
 function grid:remove()

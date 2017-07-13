@@ -39,6 +39,15 @@ function hud:enterFrame()
 		transition.to(hud.ctr, {time=250, xScale=1, yScale = 1})
 		hud.ctr.zero = false
 	end
+
+	--test if gamestate ~= game, then remove counter
+	if game.state == "COMPUTE" and hud.ctr.alpha == 1 then
+		game:shake(hud.ctr)
+		transition.to(hud.ctr, {time = 150, alpha = 0, onStart = function() hud.ctr.alpha = 0.99 end})
+	elseif game.state == "GAME" and hud.ctr.alpha == 0 then
+		game:shake(hud.ctr)
+		transition.to(hud.ctr, {time = 150, alpha = 1, onStart=function() hud.ctr.alpha = 0.01 end})
+	end
 end
 
 function hud:tap(event)
