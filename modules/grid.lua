@@ -18,8 +18,8 @@ function grid:create()
 		end
 	end
 	grid.center = {x = -5 + (55 * 3), y = -15 + (55 * 4)}
-	grid.top = -15 + (55 * 2)
-	grid.bottom = -15 + (55 * 6)
+	grid.top = -20 + (55 * 2)
+	grid.bottom = -20 + (55 * 6)
 	grid.left = 50
 	grid.right = -5 + (55 * 5)
 end
@@ -87,7 +87,8 @@ function grid:repopulate()
 	touch.points = {}
 	grid.lastTouched = nil
 	if game.state == "REPOPULATE" then
-		timer.performWithDelay(150 * (ctr + 1), function() grid:powerups() end)
+		timer.performWithDelay(125 
+			* (ctr + 1), function() grid:powerups() end)
 	else
 		timer.performWithDelay(100 * (ctr + 1), function() game.state = "GAME" end)
 	end
@@ -133,8 +134,12 @@ function grid:powerups()
 		tile:activate(touch.powerups[i], false)
 	end
 
-	touch.powerups = {}
-	grid:fall()
+	if #touch.powerups > 0 then
+		touch.powerups = {}
+		timer.performWithDelay(350, function() grid:fall() end)
+	else
+		grid:fall()
+	end
 end
 
 function grid:compute()

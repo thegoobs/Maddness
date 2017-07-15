@@ -6,9 +6,11 @@ function bomb:animate(t, neighbors)
 	local particles = {}
 	local anim = display.newGroup()
 	for i = 1, #neighbors do
-		local xpos, ypos = neighbors[i].rect:localToContent(0, 0)
-		particles[i] = display.newRect(anim, tx, ty, 50, 50)
-		transition.to(particles[i], {time = 150, x = xpos, y = ypos})
+		if neighbors[i].powerup == false then
+			local xpos, ypos = neighbors[i].rect:localToContent(0, 0)
+			particles[i] = display.newRect(anim, tx, ty, 50, 50)
+			transition.to(particles[i], {time = 150, x = xpos, y = ypos})
+		end
 	end
 
 	local function destroy()
@@ -35,6 +37,7 @@ function bomb:activate(t) --t for tile
 		for i = 1, #neighbors do --for each neighbor
 			if grid[neighbors[i].xpos][neighbors[i].ypos] ~= nil then
 				if neighbors[i].powerup == false then
+					--grid:clearDisabled(neighbors[i].xpos, neighbors[i].ypos)
 					neighbors[i]:removeSelf()
 					grid[neighbors[i].xpos][neighbors[i].ypos] = nil
 				else

@@ -39,7 +39,6 @@ function game:makeGroup()
 end
 
 function game:remove()
-	print("get out")
 	game.score = 0
 	game.tr = 0
 

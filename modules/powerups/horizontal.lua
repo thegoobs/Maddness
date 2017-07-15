@@ -2,7 +2,7 @@ local horizontal = {}
 
 function horizontal:animate(xpos, ypos)
 	--make a thing to animate
-	local y = -15 + 55 * (ypos + 1)
+	local y = -20 + 55 * (ypos + 1)
 	local anim = display.newGroup()
 	local left = display.newRect(anim, display.contentCenterX, y, 50, 50)
 	local right = display.newRect(anim, display.contentCenterX, y, 50, 50)
@@ -37,6 +37,7 @@ function horizontal:activate(t) --to for tile
 	local moveOn = false
 
 	for i = 1, #row do
+		--grid:clearDisabled(i, t.ypos)
 		transition.to(row[i], {time=100, alpha=0, onStart= function()
 			grid[row[i].xpos][row[i].ypos] = nil
 		end})

@@ -92,7 +92,6 @@ function tile:activate(t, RecursivelyCalled)
 	if t.powerup == "horizontal" then
 		horizontal:activate(t)
 	end
-
 end
 
 return tile
