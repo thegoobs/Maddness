@@ -5,9 +5,18 @@ function scene:create( event )
  
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
-
+    --make background to hide menu
     local bg = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
     bg:setFillColor(0,0,0.5)
+
+    function bg.touch(event)
+        if event.phase == "ended" then
+            print("ended")
+            grid:compute()
+        end
+    end
+
+    bg:addEventListener("touch", bg.touch)
     game:start()
     game:makeGroup()
     sceneGroup:insert(game.group)

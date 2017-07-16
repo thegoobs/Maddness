@@ -12,7 +12,7 @@ function hud:create()
 	hud.score.id = "score"
 
 	Runtime:addEventListener("enterFrame", hud)
-	hud.score:addEventListener("tap", hud)
+	hud.score:addEventListener("touch", hud)
 end
 
 function hud:remove()
@@ -50,8 +50,8 @@ function hud:enterFrame()
 	end
 end
 
-function hud:tap(event)
-	if event.target.id == "score" then
+function hud:touch(event)
+	if event.target.id == "score" and event.phase == "ended" then
 		composer.gotoScene("scenes.scene_menu")
 	end
 end

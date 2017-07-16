@@ -38,7 +38,7 @@ function horizontal:activate(t) --to for tile
 
 	for i = 1, #row do
 		--grid:clearDisabled(i, t.ypos)
-		transition.to(row[i], {time=100, alpha=0, onStart= function()
+		transition.to(grid[row[i].xpos][row[i].ypos], {time=100, alpha=0, onStart= function()
 			grid[row[i].xpos][row[i].ypos] = nil
 		end})
 	end

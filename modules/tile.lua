@@ -74,8 +74,9 @@ function tile:touch(event)
 	end
 
 
-	if game.state == "GAME" and event.phase == "ended" and event.target.disabled == false then
+	if game.state == "GAME" and event.phase == "ended" then
 		grid:compute()
+		return true
 	end
 end
 
