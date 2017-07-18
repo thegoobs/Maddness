@@ -44,7 +44,6 @@ function horizontal:activate(t) --to for tile
 	end
 
 	self:animate(t.xpos, t.ypos)
-	game.score = game.score + 10000
 	row = {}
 end
 

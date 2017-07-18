@@ -43,7 +43,6 @@ function vertical:activate(t) --t for tile
 	end
 
 	self:animate(t.xpos, t.ypos)
-	game.score = game.score + 10000
 	column = {}
 end
 

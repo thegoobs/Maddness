@@ -1,6 +1,7 @@
 local grid = {}
 grid.transition = false
 grid.lastTouched = nil
+grid.combo = 0 --combo used for reward stuff
 
 --dimensions for animation purposes
 grid.center = nil
@@ -90,7 +91,13 @@ function grid:repopulate()
 		timer.performWithDelay(125 
 			* (ctr + 1), function() grid:powerups() end)
 	else
-		timer.performWithDelay(100 * (ctr + 1), function() game.state = "GAME" end)
+		timer.performWithDelay(100 * (ctr + 1), function()
+			if grid.combo >= 1500 then
+				reward.text("Tasty!")
+				grid.combo = 0
+			end
+			game.state = "GAME"
+		end)
 	end
 end
 
@@ -131,6 +138,8 @@ end
 function grid:powerups()
 	game.state = "POWERUPS"
 	for i = 1, #touch.powerups do
+		game.score = game.score + 10000
+		grid.combo = grid.combo + 10000
 		tile:activate(touch.powerups[i], false)
 	end
 
@@ -161,6 +170,7 @@ function grid:compute()
 		alpha = 0,
 		onComplete = function()
 			game:updateScore(100 * i)
+			grid.combo = grid.combo + (100 * i)
 			grid:clearDisabled(touch.points[i].xpos, touch.points[i].ypos)
 			grid[touch.points[i].xpos][touch.points[i].ypos]:removeSelf()
 			grid[touch.points[i].xpos][touch.points[i].ypos] = nil

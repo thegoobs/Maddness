@@ -33,8 +33,8 @@ function game:makeGroup()
 	end
 
 	--add HUD elements to group
-	game.group:insert(hud.ctr)
-	game.group:insert(hud.score)
+	game.group:insert(hud.header)
+	game.group:insert(hud.footer)
 
 end
 

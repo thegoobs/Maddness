@@ -21,7 +21,7 @@ function bomb:animate(t, neighbors)
 
 	transition.to(anim, {time = 300, alpha = 0, onComplete = destroy})
 
-	--shake grid
+	-- --shake grid
 	for i = 1, game.columns do
 		for j = 1, game.rows do
 			if grid[i][j] ~= nil then
@@ -50,7 +50,6 @@ function bomb:activate(t) --t for tile
 	end
 
 	self:animate(t, neighbors)
-	game.score = game.score + 10000
 	t:removeSelf()
 	grid[t.xpos][t.ypos] = nil
 end

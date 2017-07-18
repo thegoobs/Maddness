@@ -11,8 +11,8 @@ function scene:create( event )
 
     function bg.touch(event)
         if event.phase == "ended" then
-            print("ended")
             grid:compute()
+            return true
         end
     end
 
@@ -30,10 +30,8 @@ function scene:show( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
-
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
- 
     end
 end
  

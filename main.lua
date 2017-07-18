@@ -18,6 +18,7 @@ widget = require("widget")
 bomb = require("modules.powerups.bomb")
 vertical = require("modules.powerups.vertical")
 horizontal = require("modules.powerups.horizontal")
+reward = require("modules.reward")
 
 debug = 0
 --all main does is go to the first scene
