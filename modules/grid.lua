@@ -26,9 +26,10 @@ function grid:create()
 end
 
 function grid:remove()
-	if game.state == "GAME" then
-		for i = 1, game.columns do
-			for j = 1, game.rows do
+	print("remove")
+	for i = 1, game.columns do
+		for j = 1, game.rows do
+			if grid[i][j] ~= nil then
 				timer.performWithDelay(15 * i * j, function()
 					transition.to(grid[i][j], {time = 100, alpha = 0, y = 25, onComplete = function()
 						grid[i][j]:removeSelf()
@@ -41,6 +42,7 @@ function grid:remove()
 
 	grid.lastTouched = nil
 	grid.transition = false
+	print("ended")
 end
 
 function grid:fall()
@@ -88,15 +90,17 @@ function grid:repopulate()
 	touch.points = {}
 	grid.lastTouched = nil
 	if game.state == "REPOPULATE" then
-		timer.performWithDelay(125 
-			* (ctr + 1), function() grid:powerups() end)
+		timer.performWithDelay(125 * (ctr + 1), function()
+			grid:powerups()
+		end)
 	else
 		timer.performWithDelay(100 * (ctr + 1), function()
 			if grid.combo >= 1500 then
 				reward.text("Tasty!")
 				grid.combo = 0
+			else
+				game.state = "GAME"
 			end
-			game.state = "GAME"
 		end)
 	end
 end
@@ -240,7 +244,7 @@ function grid:test()
  			end
 		end
 	end
-	composer.gotoScene("scenes.scene_menu")
+	game:lose()
 	return false
 end
 

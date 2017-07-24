@@ -6,32 +6,41 @@ function tile:create(xpos, ypos)
 	t.xpos = xpos
 	t.ypos = ypos
 	t.color = {1,1,1}
+	t.img = nil
 
 	--set value, check if power up
-	t.val = math.random(-5,5)--game.min, game.max)
+	t.val = math.random(game.min, game.max)
 	if t.val == 0 then
-		local r = math.random(1, 3)
-		if r == 1 then
+		local r = math.random(1, 100)
+		if r < 32 then
 			t.powerup = "vertical"
 			t.color = {1,0,1}
 			t.rect:setFillColor(unpack(t.color)) --unpack table for some reason
-		elseif r == 2 then
+			t.img = display.newImage(t, "media/vertical.png", t.rect.x, t.rect.y)
+		elseif r < 65 then
 			t.powerup = "bomb"
 			t.color = {0,0,1}
 			t.rect:setFillColor(unpack(t.color))
-		elseif r == 3 then
+			t.img = display.newImage(t, "media/bomb.png", t.rect.x, t.rect.y)
+		elseif r < 95 then
 			t.powerup = "horizontal"
 			t.color = {1,1,0}
 			t.rect:setFillColor(unpack(t.color))
+			t.img = display.newImage(t, "media/horizontal.png", t.rect.x, t.rect.y)
+		elseif r >= 95 then
+			t.powerup = false --not actual powerup
+			t.val = "x0"
 		end
 	else
 		t.powerup = false
 	end
 
 	--create text
-	t.text = display.newText(t, t.val, -5 + 55 * xpos, -15 + 55 * ypos, "media/Bungee-Regular.ttf", 20)
-	t.text:setFillColor(0,0,0)
-	
+	if t.powerup == false then
+		t.text = display.newText(t, t.val, -5 + 55 * xpos, -15 + 55 * ypos, "media/Bungee-Regular.ttf", 20)
+		t.text:setFillColor(0,0,0)
+	end
+
 	--enable conditional variables
 	t.selected = false
 	t.disabled = false
@@ -69,12 +78,18 @@ function tile:touch(event)
 			touch:addPoint(event.target)
 			event.target.rect:setFillColor(1,0,0)
 			event.target.selected = true
-			game.ctr = game.ctr + event.target.val
+
+			if event.target.val == "x0" then
+				game.ctr = 0
+			else
+				game.ctr = game.ctr + event.target.val
+			end
+			return true
 		end
 	end
 
 
-	if game.state == "GAME" and event.phase == "ended" then
+	if game.state == "GAME" and event.phase == "ended" and event.target.disabled == false then
 		grid:compute()
 		return true
 	end

@@ -10,7 +10,7 @@ function scene:create( event )
     bg:setFillColor(0,0,0.5)
 
     function bg.touch(event)
-        if event.phase == "ended" then
+        if event.phase == "ended" and game.state == "GAME" then
             grid:compute()
             return true
         end

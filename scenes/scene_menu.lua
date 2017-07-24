@@ -13,11 +13,11 @@ function scene:create(event)
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
     local g = display.newGroup()
-    local bg = display.newRect(g, display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
+    bg = display.newRect(g, display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
     bg:setFillColor(0,0,0.5)
 
     local title = display.newText( g, "Nuffins", display.contentCenterX, 100, "media/Bungee-Regular.ttf" , 48)
-    local start = widget.newButton({
+    start = widget.newButton({
         id = "start",
         label = "Start",
         x = display.contentCenterX,
@@ -32,9 +32,9 @@ function scene:create(event)
         font = "media/Bungee-Regular.ttf",
         labelColor = {default={0,0,0}, over={0,0,0}}
         })
-    start:addEventListener("tap", buttonPress)
     g:insert(start)
     sceneGroup:insert(g)
+    start:addEventListener("tap", buttonPress)
 end
  
 

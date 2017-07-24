@@ -8,6 +8,12 @@ Design by Bri Tamasi, Curtis Kimberlin
 
 --Headers
 composer = require("composer")
+
+bomb = require("modules.powerups.bomb")
+vertical = require("modules.powerups.vertical")
+horizontal = require("modules.powerups.horizontal")
+zero = require("modules.powerups.zero")
+
 grid = require("modules.grid")
 tile = require("modules.tile")
 game = require("modules.game")
@@ -15,11 +21,10 @@ hud = require("modules.hud")
 touch = require("modules.touch")
 combination = require("modules.combination")
 widget = require("widget")
-bomb = require("modules.powerups.bomb")
-vertical = require("modules.powerups.vertical")
-horizontal = require("modules.powerups.horizontal")
+
 reward = require("modules.reward")
 
-debug = 0
---all main does is go to the first scene
+--setup system check whether or not game becomes suspended or not
+Runtime:addEventListener("system", game)
+--go to main menu
 composer.gotoScene("scenes.scene_menu")

@@ -1,5 +1,6 @@
 local hud = {}
 hud.shake = nil
+hud.event = nil
 
 function hud:create()
 	hud.header = display.newGroup()
@@ -51,39 +52,15 @@ function hud:create()
         labelColor = {default={0,0,0}, over={0,0,0}}
 		})
 
-	hud.powerups = {}
-
-	for i = 1, 3 do
-		hud.powerups[i] = widget.newButton({
-			id = tostring(i),
-			label = tostring(i),
-
-			x = 80 + (80 * (i - 1)),
-			y = (display.contentHeight - 80) + 140,
-
-			shape = "roundedRect",
-			width = 75,
-			height = 30,
-			fillColor = {default = {1,1,1}, over = {0,0,0}},
-
-			font = "media/Bungee-Regular.ttf",
-			size = 13,
-	        labelColor = {default={0,0,0}, over={0,0,0}}
-			})
-	end
-
 	hud.header:insert(hud.ctr)
 	hud.footer:insert(hud.score)
 	hud.header:insert(hud.pause)
 	hud.header:insert(hud.settings)
 
-	for i = 1, 3 do
-		hud.footer:insert(hud.powerups[i])
-	end
-
 	--event listeners
-	Runtime:addEventListener("enterFrame", hud)
-	hud.score:addEventListener("touch", hud)
+	hud.event = Runtime:addEventListener("enterFrame", hud)
+	hud.score:addEventListener("tap", hud)
+	hud.pause:addEventListener("tap", hud)
 	hud:animate()
 end
 
@@ -112,6 +89,9 @@ function hud:remove()
 	transition.to(hud.footer, {time = 500, y = 140, transition = easing.inBack, onComplete = function()
 		hud.footer:removeSelf()
 	end})
+
+	Runtime:removeEventListener("enterFrame", hud)
+	zero.theta = 0
 end
 
 function hud:animate()
@@ -122,6 +102,7 @@ end
 function hud:enterFrame()
 	hud.ctr.text = game.ctr
 	hud.score.text = "Score: " .. game.score
+	zero.theta = zero.theta + 0.1 --do it here so it doesn't add multiple times!
 
 	--test if counter is zero, and make the text change to show being done
 	if game.ctr == 0 and hud.ctr.zero == false and #touch.points > 1 then
@@ -144,9 +125,12 @@ function hud:enterFrame()
 	end
 end
 
-function hud:touch(event)
-	if event.target.id == "score" and event.phase == "ended" then
+function hud:tap(event)
+	if event.target.id == "score" then
 		composer.gotoScene("scenes.scene_menu")
+		return true
+	elseif event.target.id == "pause" then
+		game:pause()
 		return true
 	end
 end

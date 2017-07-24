@@ -14,6 +14,8 @@ function reward.text(text)
 				g:removeSelf()
 				main = nil
 				outline = nil
+
+				game.state = "GAME"
 			end})
 		end)
 	end})
