@@ -26,7 +26,6 @@ function grid:create()
 end
 
 function grid:remove()
-	print("remove")
 	for i = 1, game.columns do
 		for j = 1, game.rows do
 			if grid[i][j] ~= nil then
@@ -42,7 +41,6 @@ function grid:remove()
 
 	grid.lastTouched = nil
 	grid.transition = false
-	print("ended")
 end
 
 function grid:fall()

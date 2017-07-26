@@ -99,9 +99,9 @@ function game:pause()
         labelColor = {default={0,0,0}, over={0,0,0}}
 	})
 	
-	local extra = widget.newButton({
-		id = "extra",
-		label = "???",
+	local ads = widget.newButton({
+		id = "ads",
+		label = "No Ads?",
 
 		x = display.contentCenterX + 55,
 		y = resume.y + 50,
@@ -121,7 +121,7 @@ function game:pause()
 	game.pauseGroup:insert(title)
 	game.pauseGroup:insert(resume)
 	game.pauseGroup:insert(quit)
-	game.pauseGroup:insert(extra)
+	game.pauseGroup:insert(ads)
 	transition.to(game.pauseGroup, {time = 600, y = -1 * offset, transition = easing.outBack})
 	resume:addEventListener("touch", function(event) if event.phase == "ended" then game:unpause() return true end end)
 	quit:addEventListener("touch", function(event) if event.phase == "ended" then game:unpause() composer.gotoScene("scenes.scene_menu") return true end end)
@@ -185,9 +185,9 @@ function game:lose()
         labelColor = {default={0,0,0}, over={0,0,0}}
 	})
 	
-	local extra = widget.newButton({
-		id = "extra",
-		label = "???",
+	local ads = widget.newButton({
+		id = "ads",
+		label = "No Ads?",
 
 		x = display.contentCenterX + 55,
 		y = retry.y + 50,
@@ -207,11 +207,15 @@ function game:lose()
 	game.pauseGroup:insert(title)
 	game.pauseGroup:insert(retry)
 	game.pauseGroup:insert(quit)
-	game.pauseGroup:insert(extra)
+	game.pauseGroup:insert(ads)
 	transition.to(game.pauseGroup, {time = 600, y = -1 * offset, transition = easing.outBack})
 	retry:addEventListener("touch", function(event)
-		timer.performWithDelay(100, function() game:remove() end)
-		return true
+		if event.phase == "ended" then
+			game:unpause()
+			timer.performWithDelay(100, function() game:remove() end)
+			timer.performWithDelay(1000, function() game:start() end)
+			return true
+		end
 	end)
 	quit:addEventListener("touch", function(event) if event.phase == "ended" then game:unpause() composer.gotoScene("scenes.scene_menu") return true end end)
 
