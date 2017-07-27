@@ -177,7 +177,7 @@ function grid:compute()
 			grid[touch.points[i].xpos][touch.points[i].ypos]:removeSelf()
 			grid[touch.points[i].xpos][touch.points[i].ypos] = nil
 			i = i + 1
-			--print(i .. " > " .. #touch.points .. "?")
+
 			if i > #touch.points then
 				timer.performWithDelay(150, function() grid:fall() end)
 			end
@@ -189,7 +189,7 @@ function grid:compute()
 		alpha = 0.5,
 		onComplete = function()
 			grid[touch.points[i].xpos][touch.points[i].ypos].disabled = true
-			grid[touch.points[i].xpos][touch.points[i].ypos].rect:setFillColor(0.5,0.5,0.5)
+			grid[touch.points[i].xpos][touch.points[i].ypos].rect:setFillColor(unpack(grid[touch.points[i].xpos][touch.points[i].ypos].color))
 			touch.points[i].selected = false
 			i = i + 1
 			if i > #touch.points then
@@ -217,7 +217,7 @@ function grid:compute()
 	if game.ctr == 0 and #touch.points > 0 then
 		game.state = "COMPUTE"
 		timer.performWithDelay(125, function()
-			if touch.points[i].powerup == false then
+			if touch.points[i].powerup == false or touch.points[i] == "evenOdd" then
 				transition.to(touch.points[i], success)
 			else
 				transition.to(touch.points[i], powerup)

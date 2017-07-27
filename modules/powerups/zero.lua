@@ -12,8 +12,9 @@ zero.gradient = {
 }
 
 function zero:enterFrame()
-	--find all zeroes
 	local z = {}
+	--set text to equal whatver you need to add to zero
+	--find all zeroes
 	for i = 1, game.columns do
 		for j = 1, game.rows do
 			if grid[i][j] ~= nil then
@@ -25,6 +26,11 @@ function zero:enterFrame()
 	end
 
 	for i, obj in ipairs(z) do
+		if game.ctr ~= 0 then
+			obj.text.text = game.ctr * -1
+		else
+			obj.text.text = " "
+		end
 		obj.rect:setFillColor(self.gradient)
 	end
 

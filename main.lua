@@ -12,6 +12,8 @@ composer = require("composer")
 bomb = require("modules.powerups.bomb")
 vertical = require("modules.powerups.vertical")
 horizontal = require("modules.powerups.horizontal")
+clean = require("modules.powerups.clean")
+evenOdd = require("modules.powerups.evenodd")
 zero = require("modules.powerups.zero")
 
 grid = require("modules.grid")
@@ -26,5 +28,6 @@ reward = require("modules.reward")
 
 --setup system check whether or not game becomes suspended or not
 Runtime:addEventListener("system", game)
+
 --go to main menu
 composer.gotoScene("scenes.scene_menu")

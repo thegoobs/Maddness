@@ -14,12 +14,14 @@ function game:start()
 	game.score = 0
 	game.ctr = 0
 
+	game.state = "STARTUP"
 	--make grid
 	grid:create()
 	--make HUD
 	hud:create()
 
-	game.state = "GAME"
+	Runtime:addEventListener("enterFrame", zero)
+	timer.performWithDelay(500, function() game.state = "GAME" end) --wiggy shit happened
 end
 
 function game:makeGroup()
@@ -28,8 +30,6 @@ function game:makeGroup()
 	--add HUD elements to group
 	game.group:insert(hud.header)
 	game.group:insert(hud.footer)
-
-	Runtime:addEventListener("enterFrame", zero)
 end
 
 function game:remove()

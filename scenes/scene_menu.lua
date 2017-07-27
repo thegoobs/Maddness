@@ -5,11 +5,15 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 function buttonPress(event)
-    timer.performWithDelay(100, function() composer.gotoScene("scenes.scene_game") end)
+    if event.phase == "ended" then
+        print("stop")
+        timer.performWithDelay(100, function() composer.gotoScene("scenes.scene_game") end)
+        start:removeEventListener("touch", buttonPress)
+        return true
+    end
 end
 
 function scene:create(event)
-
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
     local g = display.newGroup()
@@ -34,7 +38,7 @@ function scene:create(event)
         })
     g:insert(start)
     sceneGroup:insert(g)
-    start:addEventListener("tap", buttonPress)
+    start:addEventListener("touch", buttonPress)
 end
  
 

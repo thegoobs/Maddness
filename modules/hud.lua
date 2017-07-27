@@ -101,7 +101,7 @@ end
 
 function hud:enterFrame()
 	hud.ctr.text = game.ctr
-	hud.score.text = "Score: " .. game.score
+	hud.score.text = game.state--"Score: " .. game.score
 	zero.theta = zero.theta + 0.1 --do it here so it doesn't add multiple times!
 
 	--test if counter is zero, and make the text change to show being done
@@ -129,7 +129,7 @@ function hud:tap(event)
 	if event.target.id == "score" then
 		composer.gotoScene("scenes.scene_menu")
 		return true
-	elseif event.target.id == "pause" then
+	elseif event.target.id == "pause" and game.state == "GAME" then
 		game:pause()
 		return true
 	end
