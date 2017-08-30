@@ -37,7 +37,7 @@ function hud:create()
 
 	hud.settings = widget.newButton({
 		id = "settings",
-		label = "S",
+		label = "?",
 
 		x = 50,
 		y =  -100,
@@ -51,6 +51,17 @@ function hud:create()
 		size = 64,
         labelColor = {default={0,0,0}, over={0,0,0}}
 		})
+
+
+	if game.mode == "timeattack" then
+		print("ay")
+		hud.timer = display.newText("Time: " .. game.dt, 3 * display.contentWidth/4 - 27, (55 * game.rows + 80) + 140, "media/Bungee-Regular.ttf", 18)
+		hud.timer.anchorX = 0
+		hud.timer.block = display.newRect(hud.footer, -15 + (display.contentCenterX / 4), (55 * game.rows + 80) + 160, 275, 10)
+		hud.timer.block.anchorX = 0
+		hud.timer.block.max = 275
+		hud.footer:insert(hud.timer)
+	end
 
 	hud.header:insert(hud.ctr)
 	hud.footer:insert(hud.score)
@@ -101,7 +112,17 @@ end
 
 function hud:enterFrame()
 	hud.ctr.text = game.ctr
-	hud.score.text = game.state--"Score: " .. game.score
+	hud.score.text = "Score: " .. game.score
+
+	if hud.timer ~= nil and game.state ~= "PAUSE" and game.state ~= "GAME OVER" then
+		hud.timer.text = "Time: " .. 60 - (os.time() - game.dt)
+		hud.timer.block.width = hud.timer.block.max - (hud.timer.block.max * (os.time() - game.dt)/60)
+		if hud.timer.block.width <= 0 then
+			hud.timer = nil
+			game:lose()
+		end
+	end
+
 	zero.theta = zero.theta + 0.1 --do it here so it doesn't add multiple times!
 
 	--test if counter is zero, and make the text change to show being done
@@ -126,10 +147,7 @@ function hud:enterFrame()
 end
 
 function hud:tap(event)
-	if event.target.id == "score" then
-		composer.gotoScene("scenes.scene_menu")
-		return true
-	elseif event.target.id == "pause" and game.state == "GAME" then
+	if event.target.id == "pause" and game.state == "GAME" then
 		game:pause()
 		return true
 	end

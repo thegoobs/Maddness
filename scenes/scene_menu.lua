@@ -6,10 +6,16 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 function buttonPress(event)
     if event.phase == "ended" then
-        print("stop")
-        timer.performWithDelay(100, function() composer.gotoScene("scenes.scene_game") end)
-        start:removeEventListener("touch", buttonPress)
-        return true
+        if event.target.id == "endless" then
+            game.mode = "endless"
+            timer.performWithDelay(100, function() composer.gotoScene("scenes.scene_game") end)
+            endless:removeEventListener("touch", buttonPress)
+            return true
+        elseif event.target.id == "timeattack" then
+            game.mode = "timeattack"
+            timer.performWithDelay(100, function() composer.gotoScene("scenes.scene_game") end)
+            endless:removeEventListener("touch", buttonPress)
+        end
     end
 end
 
@@ -21,24 +27,46 @@ function scene:create(event)
     bg:setFillColor(0,0,0.5)
 
     local title = display.newText( g, "Nuffins", display.contentCenterX, 100, "media/Bungee-Regular.ttf" , 48)
-    start = widget.newButton({
-        id = "start",
-        label = "Start",
+    endless = widget.newButton({
+        id = "endless",
+        label = "endless",
         x = display.contentCenterX,
         y = 200,
 
         shape = "roundedRect",
-        width = 100,
-        height = 50,
+        width = 200,
+        height = 35,
         radius = 3,
         fillColor = {default={1,1,1}, over={0,0,0}},
 
         font = "media/Bungee-Regular.ttf",
         labelColor = {default={0,0,0}, over={0,0,0}}
         })
-    g:insert(start)
+    
+    timeattack = widget.newButton({
+        id = "timeattack",
+        label = "Time Attack",
+        x = display.contentCenterX,
+        y = 250,
+
+        shape = "roundedRect",
+        width = 200,
+        height = 35,
+        radius = 3,
+        fillColor = {default={1,1,1}, over={0,0,0}},
+
+        font = "media/Bungee-Regular.ttf",
+        labelColor = {default={0,0,0}, over={0,0,0}}
+        })
+
+    g:insert(endless)
+    g:insert(timeattack)
     sceneGroup:insert(g)
-    start:addEventListener("touch", buttonPress)
+
+    game.mode = nil --haven't picked it yet!
+
+    endless:addEventListener("touch", buttonPress)
+    timeattack:addEventListener("touch", buttonPress)
 end
  
 
@@ -73,10 +101,10 @@ function scene:destroy( event )
     local sceneGroup = self.view
     -- Code here runs prior to the removal of scene's view
     bg:removeSelf()
-    start:removeSelf()
+    endless:removeSelf()
 
     bg = nil
-    start = nil
+    endless = nil
 end
  
  

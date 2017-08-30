@@ -9,19 +9,51 @@ game.min = -5
 game.max = 5
 game.pauseGroup = nil
 game.shadow = nil
+game.timer = nil
+game.mode = nil
+game.dt = nil
+game.pausetime = 0
 
 function game:start()
 	game.score = 0
 	game.ctr = 0
 
+	touch.points = {}
+	touch.powerups = {}
+
+	if hud.shake ~= nil then
+		timer.cancel(hud.shake)
+	end
+	
 	game.state = "STARTUP"
+
+	Runtime:addEventListener("enterFrame", zero)
+	timer.performWithDelay(500, function() game.state = "GAME" end) --wiggy shit happened
+
+	--if game is time attack, start the timer
+	if game.mode == "timeattack" then
+		game:startTimer()
+	end
+	
 	--make grid
 	grid:create()
 	--make HUD
 	hud:create()
+end
 
-	Runtime:addEventListener("enterFrame", zero)
-	timer.performWithDelay(500, function() game.state = "GAME" end) --wiggy shit happened
+function game.timer(event)
+	if 60 - (os.time() - game.dt) <= 0 then
+		game:endTimer()
+	end
+end
+
+function game:startTimer()
+	game.dt = os.time()
+	Runtime:addEventListener("enterFrame", game.timer)
+end
+
+function game:endTimer()
+	Runtime:removeEventListener("enterFrame", game.timer)
 end
 
 function game:makeGroup()
@@ -52,6 +84,8 @@ end
 
 function game:pause()
 	game.state = "PAUSE"
+
+	game.pausetime = os.time()
 
 	local offset = (-1 * display.contentCenterY) - 100
 	
@@ -99,9 +133,9 @@ function game:pause()
         labelColor = {default={0,0,0}, over={0,0,0}}
 	})
 	
-	local ads = widget.newButton({
-		id = "ads",
-		label = "No Ads?",
+	local options = widget.newButton({
+		id = "options",
+		label = "Options",
 
 		x = display.contentCenterX + 55,
 		y = resume.y + 50,
@@ -121,7 +155,7 @@ function game:pause()
 	game.pauseGroup:insert(title)
 	game.pauseGroup:insert(resume)
 	game.pauseGroup:insert(quit)
-	game.pauseGroup:insert(ads)
+	game.pauseGroup:insert(options)
 	transition.to(game.pauseGroup, {time = 600, y = -1 * offset, transition = easing.outBack})
 	resume:addEventListener("touch", function(event) if event.phase == "ended" then game:unpause() return true end end)
 	quit:addEventListener("touch", function(event) if event.phase == "ended" then game:unpause() composer.gotoScene("scenes.scene_menu") return true end end)
@@ -129,6 +163,10 @@ end
 
 function game:unpause()
 	game.state = "UNPAUSE"
+
+	if game.dt ~= nil then
+		game.dt = game.dt - (game.pausetime - os.time())
+	end
 	transition.to(game.shadow, {time = 400, alpha = 0, onComplete = function() game.shadow:removeSelf() end})
 	transition.to(game.pauseGroup, {time = 500, y = -100, transition = easing.inSine, onComplete = function()
 		game.pauseGroup:removeSelf()
@@ -138,6 +176,14 @@ end
 
 function game:lose()
 	game.state = "GAME OVER"
+
+	--ad show
+	if revmob.isLoaded(revmob.int) then
+		revmob.show(revmob.int)
+	else
+		revmob.load(revmob.int)
+		revmob.show(revmob.int)
+	end
 
 	local offset = (-1 * display.contentCenterY) - 100
 	
@@ -185,9 +231,9 @@ function game:lose()
         labelColor = {default={0,0,0}, over={0,0,0}}
 	})
 	
-	local ads = widget.newButton({
-		id = "ads",
-		label = "No Ads?",
+	local options = widget.newButton({
+		id = "options",
+		label = "Options",
 
 		x = display.contentCenterX + 55,
 		y = retry.y + 50,
@@ -207,7 +253,7 @@ function game:lose()
 	game.pauseGroup:insert(title)
 	game.pauseGroup:insert(retry)
 	game.pauseGroup:insert(quit)
-	game.pauseGroup:insert(ads)
+	game.pauseGroup:insert(options)
 	transition.to(game.pauseGroup, {time = 600, y = -1 * offset, transition = easing.outBack})
 	retry:addEventListener("touch", function(event)
 		if event.phase == "ended" then
@@ -217,7 +263,13 @@ function game:lose()
 			return true
 		end
 	end)
-	quit:addEventListener("touch", function(event) if event.phase == "ended" then game:unpause() composer.gotoScene("scenes.scene_menu") return true end end)
+	quit:addEventListener("touch", function(event)
+		if event.phase == "ended" then
+			game:unpause()
+			composer.gotoScene("scenes.scene_menu")
+			return true
+		end
+	end)
 
 end
 

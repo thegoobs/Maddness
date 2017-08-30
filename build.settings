@@ -45,6 +45,7 @@ settings =
 				"icons/Icon-167.png",
 				"icons/Icon-180.png",
 			},
+			NSAppTransportSecurity = { NSAllowsArbitraryLoads=true }
 		},
 	},
 
@@ -54,6 +55,10 @@ settings =
 	plugins =
 	{
 	
+        ["plugin.revmob"] =
+        {
+            publisherId = "com.coronalabs"
+        },
 	},
 
 	--

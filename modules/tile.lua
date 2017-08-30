@@ -3,7 +3,8 @@ local tile = {}
 function tile:create(xpos, ypos)
 	local t = {}
 	t = display.newGroup()
-	t.rect = display.newRoundedRect(t, -5 + 55 * xpos, -15 + 55 * ypos, 50, 50, 3)
+	t.rect = display.newRoundedRect(t, -5 + 55 * xpos, -15 + 55 * ypos, 50, 50, 3) --display.newImageRect(t, "media/muffin.png", 50, 50)
+	t.rect.x, t.rect.y = -5 + 55 * xpos, -15 + 55 * ypos
 	t.xpos = xpos
 	t.ypos = ypos
 	t.color = {1,1,1}
@@ -11,7 +12,7 @@ function tile:create(xpos, ypos)
 
 	--set value, check if power up
 	t.val = math.random(game.min, game.max)
-	if t.val == 0 then
+	if t.val == 0 and game.mode == "endless" then
 		local r = math.random(1, 100)
 		if r < 30 then
 			t.powerup = "vertical"
@@ -32,10 +33,16 @@ function tile:create(xpos, ypos)
 			t.powerup = "clean"
 			t.color = {0,1,1}
 			t.rect:setFillColor(unpack(t.color))
+			t.img = display.newImage(t, "media/spin.png", t.rect.x, t.rect.y)
 		elseif r >= 97 then
 			t.powerup = false --not actual powerup
 			t.val = "x0"
 		end
+	elseif t.val == 0 and game.mode == "timeattack" then
+		t.powerup = "addtime"
+		t.color = {0.5, 0.5, 0.5}
+		t.rect:setFillColor(unpack(t.color))
+		t.img = display.newImage(t, "media/timer.png", t.rect.x, t.rect.y)
 	else
 		t.powerup = false
 	end
@@ -53,7 +60,7 @@ function tile:create(xpos, ypos)
 
 	--transition effects
 	t.alpha = 0
-	transition.to(t, {time = 250, alpha = 1, y = 50})
+	transition.to(t, {time = 150, alpha = 1, y = 50})
 	t:addEventListener("touch", tile)
 
 	return t
@@ -129,6 +136,10 @@ function tile:activate(t, RecursivelyCalled)
 
 	if t.powerup == "clean" then
 		clean:activate(t.xpos, t.ypos)
+	end
+
+	if t.powerup == "addtime" then
+		addtime:activate(t)
 	end
 end
 

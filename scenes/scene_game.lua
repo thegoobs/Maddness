@@ -15,10 +15,19 @@ function scene:create( event )
             return true
         end
     end
-
     bg:addEventListener("touch", bg.touch)
+    
+
     game:start()
     game:makeGroup()
+    
+    if revmob.isLoaded(revmob.banner) then
+        revmob.show( revmob.banner, { yAlign="bottom" } )
+    else
+        revmob.load(revmob.banner)
+        revmob.show(revmob.banner, {yAlign="bottom"})
+    end
+
     sceneGroup:insert(game.group)
 end
  
@@ -57,6 +66,7 @@ function scene:destroy( event )
     local sceneGroup = self.view
     -- Code here runs prior to the removal of scene's view
     game:remove()
+    revmob.hide(revmob.banner)
 end
  
  

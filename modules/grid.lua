@@ -67,15 +67,21 @@ function grid:fall()
 		end
 	end
 	if game.state == "COMPUTE" then
-		game.state = "REPOPULATE"
-		timer.performWithDelay(maxtime, function() grid:repopulate() end)
+		if game.state ~= "GAME OVER" then
+			game.state = "REPOPULATE"
+			timer.performWithDelay(maxtime, function() grid:repopulate() end)
+		end
 	else
-		game.state = "CLEANUP"
-		timer.performWithDelay(maxtime, function() grid:repopulate() end)
+		if game.state ~= "GAME OVER" then
+			game.state = "CLEANUP"
+			timer.performWithDelay(maxtime, function() grid:repopulate() end)
+		end
 	end
 end
 
 function grid:repopulate()
+	print(game.state)
+	if game.state == "GAME OVER" then return false end
 	ctr = 1
 	for i = 1, game.columns do
 			for j = 1, game.rows do
@@ -93,10 +99,9 @@ function grid:repopulate()
 		end)
 	else
 		timer.performWithDelay(100 * (ctr + 1), function()
-			if grid.combo >= 1500 then
-				reward.text("Tasty!")
+			if grid:test() then
+				--reward.text("Tasty!")
 				grid.combo = 0
-			else
 				game.state = "GAME"
 			end
 		end)

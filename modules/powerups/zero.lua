@@ -29,7 +29,7 @@ function zero:enterFrame()
 		if game.ctr ~= 0 then
 			obj.text.text = game.ctr * -1
 		else
-			obj.text.text = " "
+			obj.text.text = "0"
 		end
 		obj.rect:setFillColor(self.gradient)
 	end
