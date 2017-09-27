@@ -35,9 +35,9 @@ function hud:create()
         labelColor = {default={0,0,0}, over={0,0,0}}
 		})
 
-	hud.settings = widget.newButton({
-		id = "settings",
-		label = "?",
+	hud.mute = widget.newButton({
+		id = "mute",
+		label = "",
 
 		x = 50,
 		y =  -100,
@@ -51,7 +51,8 @@ function hud:create()
 		size = 64,
         labelColor = {default={0,0,0}, over={0,0,0}}
 		})
-
+	hud.mute.image = display.newImage("media/sound.png", hud.mute.x, hud.mute.y)
+	hud.mute.image:scale(0.5, 0.5)
 
 	if game.mode == "timeattack" then
 		print("ay")
@@ -66,12 +67,14 @@ function hud:create()
 	hud.header:insert(hud.ctr)
 	hud.footer:insert(hud.score)
 	hud.header:insert(hud.pause)
-	hud.header:insert(hud.settings)
+	hud.header:insert(hud.mute)
+	hud.header:insert(hud.mute.image)
 
 	--event listeners
 	hud.event = Runtime:addEventListener("enterFrame", hud)
 	hud.score:addEventListener("tap", hud)
 	hud.pause:addEventListener("tap", hud)
+	hud.mute:addEventListener("tap", hud)
 	hud:animate()
 end
 
@@ -79,7 +82,7 @@ function hud:remove()
 	-- hud.ctr:removeSelf()
 	-- hud.score:removeSelf()
 	-- hud.pause:removeSelf()
-	-- hud.settings:removeSelf()
+	-- hud.mute:removeSelf()
 
 	-- for i = 1, 3 do
 	-- 	hud.powerups[i]:removeSelf()
@@ -90,7 +93,7 @@ function hud:remove()
 	-- hud.ctr = nil
 	-- hud.score = nil
 	-- hud.pause = nil
-	-- hud.settings = nil
+	-- hud.mute = nil
 
 	-- Runtime:removeEventListener("enterFrame", hud)
 	transition.to(hud.header, {time = 500, y = -140, transition = easing.inBack, onComplete = function()
@@ -148,8 +151,23 @@ end
 
 function hud:tap(event)
 	if event.target.id == "pause" and game.state == "GAME" then
+		sound:play("button")
 		game:pause()
 		return true
+	end
+
+	if event.target.id == "mute" then
+		if game.mute == false then
+			game.mute = true
+			hud.mute.image:removeSelf()
+			hud.mute.image = display.newImage(hud.header, "media/mute.png", hud.mute.x, hud.mute.y)
+			hud.mute.image:scale(0.5, 0.5)
+		else
+			game.mute = false
+			hud.mute.image:removeSelf()
+			hud.mute.image = display.newImage(hud.header, "media/sound.png", hud.mute.x, hud.mute.y)
+			hud.mute.image:scale(0.5, 0.5)
+		end
 	end
 end
 

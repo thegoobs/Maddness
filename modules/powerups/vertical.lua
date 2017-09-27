@@ -43,6 +43,7 @@ function vertical:activate(t) --t for tile
 	end
 
 	self:animate(t.xpos, t.ypos)
+	sound:play("vertical")
 	column = {}
 end
 

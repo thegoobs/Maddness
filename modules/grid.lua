@@ -23,6 +23,10 @@ function grid:create()
 	grid.bottom = -20 + (55 * 6)
 	grid.left = 50
 	grid.right = -5 + (55 * 5)
+
+	if game.mode == "continue" then
+		timer.performWithDelay(15 * game.rows * game.columns, function() game.mode = "endless" end)
+	end
 end
 
 function grid:remove()
@@ -80,7 +84,6 @@ function grid:fall()
 end
 
 function grid:repopulate()
-	print(game.state)
 	if game.state == "GAME OVER" then return false end
 	ctr = 1
 	for i = 1, game.columns do
@@ -176,6 +179,7 @@ function grid:compute()
 		time = 100,
 		alpha = 0,
 		onComplete = function()
+			sound:play("pop")
 			game:updateScore(100 * i)
 			grid.combo = grid.combo + (100 * i)
 			grid:clearDisabled(touch.points[i].xpos, touch.points[i].ypos)
@@ -193,6 +197,7 @@ function grid:compute()
 		time = 100,
 		alpha = 0.5,
 		onComplete = function()
+		sound:play("disable")
 			grid[touch.points[i].xpos][touch.points[i].ypos].disabled = true
 			grid[touch.points[i].xpos][touch.points[i].ypos].rect:setFillColor(unpack(grid[touch.points[i].xpos][touch.points[i].ypos].color))
 			touch.points[i].selected = false

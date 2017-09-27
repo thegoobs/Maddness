@@ -3,48 +3,66 @@ local tile = {}
 function tile:create(xpos, ypos)
 	local t = {}
 	t = display.newGroup()
-	t.rect = display.newRoundedRect(t, -5 + 55 * xpos, -15 + 55 * ypos, 50, 50, 3) --display.newImageRect(t, "media/muffin.png", 50, 50)
+	t.rect = display.newRoundedRect(t, -5 + 55 * xpos, -15 + 55 * ypos, 47, 47, 3)
+	-- t.rect = display.newImageRect(t, "media/muffin.png", 50, 50)
 	t.rect.x, t.rect.y = -5 + 55 * xpos, -15 + 55 * ypos
 	t.xpos = xpos
 	t.ypos = ypos
 	t.color = {1,1,1}
 	t.img = nil
+	t.url = nil
+
+	local alphaSave = nil
 
 	--set value, check if power up
-	t.val = math.random(game.min, game.max)
-	if t.val == 0 and game.mode == "endless" then
-		local r = math.random(1, 100)
-		if r < 30 then
-			t.powerup = "vertical"
-			t.color = {1,0,1}
-			t.rect:setFillColor(unpack(t.color)) --unpack table for some reason
-			t.img = display.newImage(t, "media/vertical.png", t.rect.x, t.rect.y)
-		elseif r < 60 then
-			t.powerup = "bomb"
-			t.color = {0,0,1}
+	if game.mode == "endless" then
+		t.val = math.random(game.min, game.max)
+		if t.val == 0 and game.mode == "endless" then
+			local r = math.random(1, 100)
+			if r < 33 then
+				t.powerup = "vertical"
+				t.color = {1,0,1}
+				t.rect:setFillColor(unpack(t.color)) --unpack table for some reason
+				t.img = display.newImage(t, "media/vertical.png", t.rect.x, t.rect.y)
+				t.url = "media/vertical.png"
+			elseif r < 70 then
+				t.powerup = "bomb"
+				t.color = {0,0,1}
+				t.rect:setFillColor(unpack(t.color))
+				t.img = display.newImage(t, "media/bomb.png", t.rect.x, t.rect.y)
+				t.url = "media/bomb.png"
+			else
+				t.powerup = "horizontal"
+				t.color = {1,1,0}
+				t.rect:setFillColor(unpack(t.color))
+				t.img = display.newImage(t, "media/horizontal.png", t.rect.x, t.rect.y)
+				t.url = "media/horizontal.png"
+			end
+		elseif t.val == 0 and game.mode == "timeattack" then
+			t.powerup = "addtime"
+			t.color = {0.5, 0.5, 0.5}
 			t.rect:setFillColor(unpack(t.color))
-			t.img = display.newImage(t, "media/bomb.png", t.rect.x, t.rect.y)
-		elseif r < 90 then
-			t.powerup = "horizontal"
-			t.color = {1,1,0}
-			t.rect:setFillColor(unpack(t.color))
-			t.img = display.newImage(t, "media/horizontal.png", t.rect.x, t.rect.y)
-		elseif r < 97 then
-			t.powerup = "clean"
-			t.color = {0,1,1}
-			t.rect:setFillColor(unpack(t.color))
-			t.img = display.newImage(t, "media/spin.png", t.rect.x, t.rect.y)
-		elseif r >= 97 then
-			t.powerup = false --not actual powerup
-			t.val = "x0"
+			t.img = display.newImage(t, "media/timer.png", t.rect.x, t.rect.y)
+			t.url = "media/vertical.png"
+		else
+			t.powerup = false
 		end
-	elseif t.val == 0 and game.mode == "timeattack" then
-		t.powerup = "addtime"
-		t.color = {0.5, 0.5, 0.5}
-		t.rect:setFillColor(unpack(t.color))
-		t.img = display.newImage(t, "media/timer.png", t.rect.x, t.rect.y)
 	else
+		t.val = game.save.grid[xpos][ypos].val
 		t.powerup = false
+		t.disabled = game.save.grid[xpos][ypos].disabled
+		if t.disabled == true then
+			alphaSave = 0.5
+		end
+
+		if t.val == 0 then
+			t.powerup = game.save.grid[xpos][ypos].powerup
+			t.url = game.save.grid[xpos][ypos].url
+			t.img = display.newImage(t, t.url, t.rect.x, t.rect.y)
+			t.color = game.save.grid[xpos][ypos].color
+			t.rect:setFillColor(unpack(game.save.grid[xpos][ypos].color))
+
+		end
 	end
 
 	--create text
@@ -55,12 +73,13 @@ function tile:create(xpos, ypos)
 
 	--enable conditional variables
 	t.selected = false
-	t.disabled = false
+	if game.mode ~= "continue" then t.disabled = false end
 	t.destroyed = false
 
 	--transition effects
 	t.alpha = 0
-	transition.to(t, {time = 150, alpha = 1, y = 50})
+	if alphaSave == nil then alphaSave = 1 end
+	transition.to(t, {time = 150, alpha = alphaSave, y = 50})
 	t:addEventListener("touch", tile)
 
 	return t
@@ -91,14 +110,8 @@ function tile:touch(event)
 			touch:addPoint(event.target)
 			event.target.rect:setFillColor(1,0,0)
 			event.target.selected = true
-
-			if event.target.val == "x0" then
-				game.ctr = 0
-			elseif event.target.val == "+/-" then
-				game.ctr = game.ctr
-			else
-				game.ctr = game.ctr + event.target.val
-			end
+			game.ctr = game.ctr + event.target.val
+			sound:play("select")
 			return true
 		end
 	end
@@ -106,7 +119,6 @@ function tile:touch(event)
 
 	if game.state == "GAME" and event.phase == "ended" and event.target.disabled == false then
 		if event.target.powerup == "evenOdd" then
-			print("hey")
 			tile:activate(event.target, false)
 			return true
 		else

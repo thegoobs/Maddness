@@ -50,6 +50,7 @@ function bomb:activate(t) --t for tile
 	end
 
 	self:animate(t, neighbors)
+	sound:play("bomb")
 	t:removeSelf()
 	grid[t.xpos][t.ypos] = nil
 end

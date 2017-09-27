@@ -1,13 +1,12 @@
 --[[
-Zero Game
+Nuffins
 Idea by Bri Tamasi, Eli Schoolar, and Guthrie Schoolar
 Developed by Guthrie Schoolar
-Music and sounds by Eli Schoolar
-Design by Bri Tamasi, Curtis Kimberlin
 ]]--
 
 --Headers
 composer = require("composer")
+json = require("json")
 
 bomb = require("modules.powerups.bomb")
 vertical = require("modules.powerups.vertical")
@@ -24,6 +23,8 @@ hud = require("modules.hud")
 touch = require("modules.touch")
 combination = require("modules.combination")
 widget = require("widget")
+file = require("modules.file")
+sound = require("modules.sound")
 
 reward = require("modules.reward")
 
@@ -50,7 +51,7 @@ local function adListener( event )
     elseif (event.phase == "hidden") then
     	if event.type == "banner" then
 	    	revmob.load(event.type, revmob.banner)
-	    else
+	    elseif event.type == "interstitial" then
 	    	revmob.load(event.type, revmob.int)
 	    end
     end
@@ -64,5 +65,8 @@ Runtime:addEventListener("system", game)
 
 --set up random seed
 math.randomseed(os.time())
+
+--initalize sounds
+sound:init()
 --go to main menu
 composer.gotoScene("scenes.scene_menu")

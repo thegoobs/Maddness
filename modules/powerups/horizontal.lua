@@ -44,6 +44,7 @@ function horizontal:activate(t) --to for tile
 	end
 
 	self:animate(t.xpos, t.ypos)
+	sound:play("horizontal")
 	row = {}
 end
 

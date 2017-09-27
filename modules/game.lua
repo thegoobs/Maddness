@@ -13,7 +13,9 @@ game.timer = nil
 game.mode = nil
 game.dt = nil
 game.pausetime = 0
+game.mute = false
 
+game.save = {}
 function game:start()
 	game.score = 0
 	game.ctr = 0
@@ -27,7 +29,7 @@ function game:start()
 	
 	game.state = "STARTUP"
 
-	Runtime:addEventListener("enterFrame", zero)
+	--Runtime:addEventListener("enterFrame", zero)
 	timer.performWithDelay(500, function() game.state = "GAME" end) --wiggy shit happened
 
 	--if game is time attack, start the timer
@@ -35,8 +37,13 @@ function game:start()
 		game:startTimer()
 	end
 	
+	if game.mode == "continue" then
+		game.score = game.save.score
+	end
+	
 	--make grid
 	grid:create()
+
 	--make HUD
 	hud:create()
 end
@@ -71,6 +78,10 @@ function game:remove()
 	grid:remove()
 	hud:remove()
 
+	if game.mode == "timeattack" then
+		game:endTimer()
+	end
+
 	game.state = "NOT GAME"
 	Runtime:removeEventListener("enterFrame", zero)
 end
@@ -79,7 +90,10 @@ end
 function game:system(event)
 	if event.type == "applicationSuspend" and game.state == "GAME" then
 		print("whoops")
+	elseif event.type == "applicationExit" and game.state == "GAME" then
+		file:save("savedata")
 	end
+
 end
 
 function game:pause()
@@ -95,8 +109,8 @@ function game:pause()
 	--event listener makes sure nothing behind shadow can be touched
 	game.shadow:addEventListener( "touch", function() return true end)
 
-	local border = display.newRect(display.contentCenterX, display.contentCenterY + offset, 250, 200)
-	border:setFillColor(1,0,0)
+	local border = display.newRoundedRect(display.contentCenterX, display.contentCenterY + offset, 250, 200, 3)
+	border:setFillColor(28/255,28/255,26/255)
 
 	local title = display.newText("Paused", display.contentCenterX, border.y - 50, "media/Bungee-Regular.ttf" , 48)
 	local resume = widget.newButton({
@@ -120,28 +134,11 @@ function game:pause()
 		id = "quit",
 		label = "Quit",
 
-		x = display.contentCenterX - 55,
+		x = display.contentCenterX,
 		y = resume.y + 50,
 
 		shape = "roundedRect",
-		width = 100,
-		height = 40,
-		fillColor = {default = {1,1,1}, over = {0,0,0}},
-
-		font = "media/Bungee-Regular.ttf",
-		size = 64,
-        labelColor = {default={0,0,0}, over={0,0,0}}
-	})
-	
-	local options = widget.newButton({
-		id = "options",
-		label = "Options",
-
-		x = display.contentCenterX + 55,
-		y = resume.y + 50,
-
-		shape = "roundedRect",
-		width = 100,
+		width = border.width - 37.5,
 		height = 40,
 		fillColor = {default = {1,1,1}, over = {0,0,0}},
 
@@ -155,10 +152,9 @@ function game:pause()
 	game.pauseGroup:insert(title)
 	game.pauseGroup:insert(resume)
 	game.pauseGroup:insert(quit)
-	game.pauseGroup:insert(options)
 	transition.to(game.pauseGroup, {time = 600, y = -1 * offset, transition = easing.outBack})
-	resume:addEventListener("touch", function(event) if event.phase == "ended" then game:unpause() return true end end)
-	quit:addEventListener("touch", function(event) if event.phase == "ended" then game:unpause() composer.gotoScene("scenes.scene_menu") return true end end)
+	resume:addEventListener("touch", function(event) if event.phase == "ended" then sound:play("button") game:unpause() return true end end)
+	quit:addEventListener("touch", function(event) if event.phase == "ended" then sound:play("button") game:unpause() file:remove("savedata") composer.gotoScene("scenes.scene_menu") return true end end)
 end
 
 function game:unpause()
@@ -193,8 +189,8 @@ function game:lose()
 	--event listener makes sure nothing behind shadow can be touched
 	game.shadow:addEventListener( "touch", function() return true end)
 
-	local border = display.newRect(display.contentCenterX, display.contentCenterY + offset, 250, 200)
-	border:setFillColor(1,0,0)
+	local border = display.newRoundedRect(display.contentCenterX, display.contentCenterY + offset, 250, 200, 3)
+	border:setFillColor(28/255,28/255,26/255)
 
 	local title = display.newText("Game Over", display.contentCenterX, border.y - 50, "media/Bungee-Regular.ttf" , 32)
 	local retry = widget.newButton({
@@ -218,28 +214,11 @@ function game:lose()
 		id = "quit",
 		label = "Quit",
 
-		x = display.contentCenterX - 55,
+		x = display.contentCenterX,
 		y = retry.y + 50,
 
 		shape = "roundedRect",
-		width = 100,
-		height = 40,
-		fillColor = {default = {1,1,1}, over = {0,0,0}},
-
-		font = "media/Bungee-Regular.ttf",
-		size = 64,
-        labelColor = {default={0,0,0}, over={0,0,0}}
-	})
-	
-	local options = widget.newButton({
-		id = "options",
-		label = "Options",
-
-		x = display.contentCenterX + 55,
-		y = retry.y + 50,
-
-		shape = "roundedRect",
-		width = 100,
+		width = border.width - 37.5,
 		height = 40,
 		fillColor = {default = {1,1,1}, over = {0,0,0}},
 
@@ -253,19 +232,20 @@ function game:lose()
 	game.pauseGroup:insert(title)
 	game.pauseGroup:insert(retry)
 	game.pauseGroup:insert(quit)
-	game.pauseGroup:insert(options)
 	transition.to(game.pauseGroup, {time = 600, y = -1 * offset, transition = easing.outBack})
 	retry:addEventListener("touch", function(event)
 		if event.phase == "ended" then
 			game:unpause()
 			timer.performWithDelay(100, function() game:remove() end)
 			timer.performWithDelay(1000, function() game:start() end)
+			file:remove("savedata")
 			return true
 		end
 	end)
 	quit:addEventListener("touch", function(event)
 		if event.phase == "ended" then
 			game:unpause()
+			file:remove("savedata")
 			composer.gotoScene("scenes.scene_menu")
 			return true
 		end
