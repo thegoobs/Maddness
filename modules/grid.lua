@@ -63,7 +63,10 @@ function grid:fall()
 						local x, y = grid[i][j]:localToContent(0, 0)
 						if maxtime < 200 + 100 * (game.rows - j) then maxtime = 200 + 100 * (game.rows - j) end
 						ctr = ctr + 1
-						transition.to(grid[i][j], {time = 200 + 100 * (j - k) + 40*ctr, y = y + 55 * (j - k), transition = easing.inSine})
+						transition.to(grid[i][j], {time = 200 + 100 * (j - k) + 40*ctr, y = y + 55 * (j - k), transition = easing.inSine,
+							onComplete = function()
+								sound:play("select")
+							end})
 						break
 					end
 				end
@@ -90,7 +93,7 @@ function grid:repopulate()
 			for j = 1, game.rows do
 			if grid[i][j] ~= nil then break end
 			ctr = ctr + 1
-			timer.performWithDelay(80 * ctr, function() grid[i][j] = tile:create(i, j) end)
+			timer.performWithDelay(80 * ctr, function() grid[i][j] = tile:create(i, j) sound:play("fall") end)
 		end
 	end
 
@@ -103,9 +106,14 @@ function grid:repopulate()
 	else
 		timer.performWithDelay(100 * (ctr + 1), function()
 			if grid:test() then
-				--reward.text("Tasty!")
-				grid.combo = 0
-				game.state = "GAME"
+				if grid.combo > 10000 then
+					sound:play("game")
+					reward.text()
+					grid.combo = 0
+				else
+					grid.combo = 0
+					game.state = "GAME"
+				end
 			end
 		end)
 	end
@@ -178,8 +186,10 @@ function grid:compute()
 	local success = {
 		time = 100,
 		alpha = 0,
-		onComplete = function()
+		onStart = function()
 			sound:play("pop")
+		end,
+		onComplete = function()
 			game:updateScore(100 * i)
 			grid.combo = grid.combo + (100 * i)
 			grid:clearDisabled(touch.points[i].xpos, touch.points[i].ypos)
@@ -215,6 +225,9 @@ function grid:compute()
 	
 	local powerup = {
 		time = 100,
+		onStart = function()
+			sound:play("startup")
+		end,
 		onComplete = function()
 			grid[touch.points[i].xpos][touch.points[i].ypos].rect:setFillColor(0,1,0)
 			i = i + 1

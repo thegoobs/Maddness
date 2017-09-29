@@ -14,13 +14,15 @@ function sound:init()
 	sound.horizontal = audio.loadSound("media/sounds/horizontal_line.wav")
 	sound.bomb = audio.loadSound("media/sounds/bomb.wav")
 	sound.disable = audio.loadSound("media/sounds/gray_blocks.wav")
+	sound.lose = audio.loadSound("media/sounds/game_over.wav")
+	sound.game = audio.loadSound("media/sounds/tasty.wav")
 end
 
 function sound:play(phrase)
 	if game.mute == false then
 		if phrase == "select" then
 			audio.play(sound.select)
-		elseif phrase == "pop" or phrase == "button" then
+		elseif phrase == "pop" or phrase == "button" or phrase == "fall" then
 			audio.play(sound.pop[math.ceil(math.random(6))])
 		elseif phrase == "startup" then
 			audio.play(sound.startup)
@@ -32,6 +34,10 @@ function sound:play(phrase)
 			audio.play(sound.bomb)
 		elseif phrase == "disable" then
 			audio.play(sound.disable)
+		elseif phrase == "lose" then
+			audio.play(sound.lose)
+		elseif phrase == "game" then
+			audio.play(sound.game)
 		end
 	end
 end

@@ -24,6 +24,7 @@ touch = require("modules.touch")
 combination = require("modules.combination")
 widget = require("widget")
 file = require("modules.file")
+nanosvg = require( "plugin.nanosvg" )
 sound = require("modules.sound")
 
 reward = require("modules.reward")
@@ -68,5 +69,7 @@ math.randomseed(os.time())
 
 --initalize sounds
 sound:init()
+
+display.setDefault("minTextureFilter", "nearest");
 --go to main menu
 composer.gotoScene("scenes.scene_menu")

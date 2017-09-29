@@ -126,8 +126,6 @@ function hud:enterFrame()
 		end
 	end
 
-	zero.theta = zero.theta + 0.1 --do it here so it doesn't add multiple times!
-
 	--test if counter is zero, and make the text change to show being done
 	if game.ctr == 0 and hud.ctr.zero == false and #touch.points > 1 then
 		hud.ctr.zero = true
@@ -140,7 +138,7 @@ function hud:enterFrame()
 	end
 
 	--test if gamestate ~= game, then remove counter
-	if game.state == "COMPUTE" and hud.ctr.alpha == 1 then
+	if (game.state == "COMPUTE" or game.state == "REWARD") and hud.ctr.alpha == 1 then
 		game:shake(hud.ctr)
 		transition.to(hud.ctr, {time = 150, alpha = 0, onStart = function() hud.ctr.alpha = 0.99 end})
 	elseif game.state == "GAME" and hud.ctr.alpha == 0 then

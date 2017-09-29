@@ -46,6 +46,7 @@ function game:start()
 
 	--make HUD
 	hud:create()
+	sound:play("game")
 end
 
 function game.timer(event)
@@ -154,7 +155,7 @@ function game:pause()
 	game.pauseGroup:insert(quit)
 	transition.to(game.pauseGroup, {time = 600, y = -1 * offset, transition = easing.outBack})
 	resume:addEventListener("touch", function(event) if event.phase == "ended" then sound:play("button") game:unpause() return true end end)
-	quit:addEventListener("touch", function(event) if event.phase == "ended" then sound:play("button") game:unpause() file:remove("savedata") composer.gotoScene("scenes.scene_menu") return true end end)
+	quit:addEventListener("touch", function(event) if event.phase == "ended" then sound:play("lose") game:unpause() file:remove("savedata") composer.gotoScene("scenes.scene_menu") return true end end)
 end
 
 function game:unpause()
@@ -172,6 +173,7 @@ end
 
 function game:lose()
 	game.state = "GAME OVER"
+	sound:play("lose")
 
 	--ad show
 	if revmob.isLoaded(revmob.int) then
@@ -235,6 +237,7 @@ function game:lose()
 	transition.to(game.pauseGroup, {time = 600, y = -1 * offset, transition = easing.outBack})
 	retry:addEventListener("touch", function(event)
 		if event.phase == "ended" then
+			sound:play("button")
 			game:unpause()
 			timer.performWithDelay(100, function() game:remove() end)
 			timer.performWithDelay(1000, function() game:start() end)
@@ -244,6 +247,7 @@ function game:lose()
 	end)
 	quit:addEventListener("touch", function(event)
 		if event.phase == "ended" then
+			sound:play("button")
 			game:unpause()
 			file:remove("savedata")
 			composer.gotoScene("scenes.scene_menu")

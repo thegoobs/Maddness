@@ -30,11 +30,14 @@ function scene:create(event)
     -- Code here runs when the scene is first created but has not yet appeared on screen
     local g = display.newGroup()
     bg = display.newRect(g, display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
-    bg:setFillColor(math.random(),math.random(),math.random())
+    local r = math.random()
+    local gr = math.random()
+    local b = math.random()
+    bg:setFillColor(r,gr,b)
 
-    local title = display.newText( g, "Nuffins", display.contentCenterX, 100, "media/Bungee-Regular.ttf" , 48)
+    local title = display.newText(g, "Nuffins", display.contentCenterX, 100, "media/Bungee-Regular.ttf" , 48)
     local subtitle = display.newText(g, "Swipe, add, win", display.contentCenterX, 135, "media/Bungee-Regular.ttf" , 16)
-    endless = widget.newButton({
+     endless = widget.newButton({
         id = "endless",
         label = "Play!",
         x = display.contentCenterX,
@@ -92,6 +95,7 @@ function scene:create(event)
         g:insert(continue)
     end
     -- g:insert(timeattack)
+
     sceneGroup:insert(g)
 
     game.mode = nil --haven't picked it yet!

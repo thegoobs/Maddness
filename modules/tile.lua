@@ -21,23 +21,25 @@ function tile:create(xpos, ypos)
 			local r = math.random(1, 100)
 			if r < 33 then
 				t.powerup = "vertical"
-				t.color = {1,0,1}
-				t.rect:setFillColor(unpack(t.color)) --unpack table for some reason
-				t.img = display.newImage(t, "media/vertical.png", t.rect.x, t.rect.y)
 				t.url = "media/vertical.png"
 			elseif r < 70 then
 				t.powerup = "bomb"
-				t.color = {0,0,1}
-				t.rect:setFillColor(unpack(t.color))
-				t.img = display.newImage(t, "media/bomb.png", t.rect.x, t.rect.y)
-				t.url = "media/bomb.png"
+				t.url = "media/bomb@2x.png"
 			else
 				t.powerup = "horizontal"
-				t.color = {1,1,0}
-				t.rect:setFillColor(unpack(t.color))
-				t.img = display.newImage(t, "media/horizontal.png", t.rect.x, t.rect.y)
 				t.url = "media/horizontal.png"
 			end
+		-- local params = {
+		-- 	filename = t.url,
+		-- 	x = t.rect.x,
+		-- 	y = t.rect.y,
+		-- 	width = 50,
+		-- 	height = 50
+		-- }
+		-- t.img = nanosvg.newImage(params)
+		-- t:insert(t.img)
+		t.img = display.newImage(t, t.url, t.rect.x, t.rect.y)
+		t.img:scale(0.5,0.5)
 		elseif t.val == 0 and game.mode == "timeattack" then
 			t.powerup = "addtime"
 			t.color = {0.5, 0.5, 0.5}
