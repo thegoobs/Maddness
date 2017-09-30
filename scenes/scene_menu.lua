@@ -12,13 +12,15 @@ function buttonPress(event)
             timer.performWithDelay(100, function() composer.gotoScene("scenes.scene_game") end)
             endless:removeEventListener("touch", buttonPress)
             return true
+
         elseif event.target.id == "continue" then
             game.mode = "continue"
             timer.performWithDelay(100, function() composer.gotoScene("scenes.scene_game") end)
             endless:removeEventListener("touch", buttonPress)
             continue:removeEventListener("touch", buttonPress)
+
         elseif event.target.id == "themeSelect" then
-            game.theme_index = ((game.theme_index + 1) % theme.max)
+            game.theme_index = ((game.theme_index + 1) % #theme)
             game.theme = theme[game.theme_index + 1]
 
             --set the color of the scene again (game will load correctly)

@@ -124,7 +124,12 @@ function grid:clearDisabled(x, y)
 		if grid[x + 1][y].disabled == true then
 			grid[x + 1][y].disabled = false
 			transition.to(grid[x + 1][y], {time = 250, alpha = 1})
-			grid[x + 1][y].rect:setFillColor(unpack(grid[x + 1][y].color))
+			grid[x + 1][y].rect:setFillColor(unpack(game.theme.main))
+			if grid[x + 1][y].img ~= nil then
+				grid[x + 1][y].img:setFillColor(unpack(game.theme.sub))
+			else
+				grid[x + 1][y].text:setFillColor(unpack(game.theme.sub))
+			end
 		end
 	end
 
@@ -132,24 +137,39 @@ function grid:clearDisabled(x, y)
 		if grid[x - 1][y].disabled == true then
 			grid[x - 1][y].disabled = false
 			transition.to(grid[x - 1][y], {time = 250, alpha = 1})
-			grid[x - 1][y].rect:setFillColor(unpack(grid[x - 1][y].color))
-		end
+			grid[x - 1][y].rect:setFillColor(unpack(game.theme.main))
+			if grid[x - 1][y].img ~= nil then
+				grid[x - 1][y].img:setFillColor(unpack(game.theme.sub))
+			else
+				grid[x - 1][y].text:setFillColor(unpack(game.theme.sub))
+			end
+		end	
 	end
 
 	if y < game.rows and grid[x][y + 1] ~= nil then
 		if grid[x][y + 1].disabled == true then
 			grid[x][y + 1].disabled = false
 			transition.to(grid[x][y + 1], {time = 250, alpha = 1})
-			grid[x][y + 1].rect:setFillColor(unpack(grid[x][y + 1].color))
-		end
+			grid[x][y + 1].rect:setFillColor(unpack(game.theme.main))
+			if grid[x][y + 1].img ~= nil then
+				grid[x][y + 1].img:setFillColor(unpack(game.theme.sub))
+			else
+				grid[x][y + 1].text:setFillColor(unpack(game.theme.sub))
+			end
+		end	
 	end
 	
 	if y > 1 and grid[x][y - 1] ~= nil then
 		if grid[x][y - 1].disabled == true then
 			grid[x][y - 1].disabled = false
 			transition.to(grid[x][y - 1], {time = 250, alpha = 1})
-			grid[x][y - 1].rect:setFillColor(unpack(grid[x][y - 1].color))
-		end
+			grid[x][y - 1].rect:setFillColor(unpack(game.theme.main))
+			if grid[x][y - 1].img ~= nil then
+				grid[x][y - 1].img:setFillColor(unpack(game.theme.sub))
+			else
+				grid[x][y - 1].text:setFillColor(unpack(game.theme.sub))
+			end
+		end	
 	end
 end
 
