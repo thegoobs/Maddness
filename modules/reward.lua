@@ -1,5 +1,5 @@
 local reward = {}
-reward.words = {"Nice!", "Great!", "Wow!", "Amazing!"}
+reward.words = {"Nice!", "Great!", "Wow!", "Amazing!", "Rad!", "Neato!", "Hooray!"}
 
 function reward.text(text)
 	game.state = "REWARD"

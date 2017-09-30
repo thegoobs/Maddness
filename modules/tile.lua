@@ -4,11 +4,12 @@ function tile:create(xpos, ypos)
 	local t = {}
 	t = display.newGroup()
 	t.rect = display.newRoundedRect(t, -5 + 55 * xpos, -15 + 55 * ypos, 47, 47, 3)
-	-- t.rect = display.newImageRect(t, "media/muffin.png", 50, 50)
+	--t.rect = display.newImageRect(t, "media/muffin.png", 50, 50)
 	t.rect.x, t.rect.y = -5 + 55 * xpos, -15 + 55 * ypos
 	t.xpos = xpos
 	t.ypos = ypos
-	t.color = {1,1,1}
+	t.color = {unpack(game.theme.sub)}
+	t.rect:setFillColor(unpack(game.theme.main))
 	t.img = nil
 	t.url = nil
 
@@ -40,10 +41,9 @@ function tile:create(xpos, ypos)
 		-- t:insert(t.img)
 		t.img = display.newImage(t, t.url, t.rect.x, t.rect.y)
 		t.img:scale(0.5,0.5)
+		t.img:setFillColor(unpack(game.theme.sub))
 		elseif t.val == 0 and game.mode == "timeattack" then
 			t.powerup = "addtime"
-			t.color = {0.5, 0.5, 0.5}
-			t.rect:setFillColor(unpack(t.color))
 			t.img = display.newImage(t, "media/timer.png", t.rect.x, t.rect.y)
 			t.url = "media/vertical.png"
 		else
@@ -62,8 +62,8 @@ function tile:create(xpos, ypos)
 			t.url = game.save.grid[xpos][ypos].url
 			t.img = display.newImage(t, t.url, t.rect.x, t.rect.y)
 			t.img:scale(0.5,0.5)
-			t.color = game.save.grid[xpos][ypos].color
-			t.rect:setFillColor(unpack(game.save.grid[xpos][ypos].color))
+			t.rect:setFillColor(unpack(game.theme.main))
+			t.img:setFillColor(unpack(game.theme.sub))
 
 		end
 	end
@@ -71,7 +71,7 @@ function tile:create(xpos, ypos)
 	--create text
 	if t.powerup == false or t.powerup == "evenOdd" then
 		t.text = display.newText(t, t.val, -5 + 55 * xpos, -15 + 55 * ypos, "media/Bungee-Regular.ttf", 20)
-		t.text:setFillColor(0,0,0)
+		t.text:setFillColor(unpack(game.theme.sub))
 	end
 
 	--enable conditional variables
@@ -111,7 +111,12 @@ function tile:touch(event)
 
 		if event.phase == "began" or event.phase == "moved" then
 			touch:addPoint(event.target)
-			event.target.rect:setFillColor(1,0,0)
+			event.target.rect:setFillColor(unpack(game.theme.sub))
+			if event.target.text ~= nil then
+				event.target.text:setFillColor(unpack(game.theme.main))
+			else
+				event.target.img:setFillColor(unpack(game.theme.main))
+			end
 			event.target.selected = true
 			game.ctr = game.ctr + event.target.val
 			sound:play("select")
@@ -132,6 +137,8 @@ function tile:touch(event)
 end
 
 function tile:activate(t, RecursivelyCalled)
+	game.score = game.score + 200
+	grid.combo = grid.combo + 200
 	--if statements for each type of powerup
 	if t.powerup == "bomb" then
 		bomb:activate(t)

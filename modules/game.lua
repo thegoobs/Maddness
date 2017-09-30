@@ -16,6 +16,9 @@ game.dt = nil
 game.pausetime = 0
 game.mute = false
 
+game.theme_index = 0
+game.theme = theme[game.theme_index + 1]
+
 game.save = {}
 function game:start()
 	game.score = 0
@@ -41,7 +44,7 @@ function game:start()
 	if game.mode == "continue" then
 		game.score = game.save.score
 	end
-	
+
 	--make grid
 	grid:create()
 
@@ -114,9 +117,10 @@ function game:pause()
 	game.shadow:addEventListener( "touch", function() return true end)
 
 	local border = display.newRoundedRect(display.contentCenterX, display.contentCenterY + offset, 250, 200, 3)
-	border:setFillColor(28/255,28/255,26/255)
+	border:setFillColor(unpack(game.theme.bg))
 
 	local title = display.newText("Paused", display.contentCenterX, border.y - 50, "media/Bungee-Regular.ttf" , 48)
+	title:setFillColor(unpack(game.theme.main))
 	local resume = widget.newButton({
 		id = "resume",
 		label = "Resume",
@@ -127,11 +131,11 @@ function game:pause()
 		shape = "roundedRect",
 		width = border.width - 37.5,
 		height = 40,
-		fillColor = {default = {1,1,1}, over = {0,0,0}},
+		fillColor = {default = {unpack(game.theme.main)}, over = {unpack(game.theme.sub)}},
 
 		font = "media/Bungee-Regular.ttf",
 		size = 64,
-        labelColor = {default={0,0,0}, over={0,0,0}}
+        labelColor = {default={unpack(game.theme.sub)}, over={unpack(game.theme.sub)}}
 	})
 	
 	local quit = widget.newButton({
@@ -144,11 +148,11 @@ function game:pause()
 		shape = "roundedRect",
 		width = border.width - 37.5,
 		height = 40,
-		fillColor = {default = {1,1,1}, over = {0,0,0}},
+		fillColor = {default = {unpack(game.theme.main)}, over = {unpack(game.theme.sub)}},
 
 		font = "media/Bungee-Regular.ttf",
 		size = 64,
-        labelColor = {default={0,0,0}, over={0,0,0}}
+        labelColor = {default={unpack(game.theme.sub)}, over={unpack(game.theme.sub)}}
 	})
 
 	game.pauseGroup = display.newGroup()
@@ -195,10 +199,12 @@ function game:lose()
 	game.shadow:addEventListener( "touch", function() return true end)
 
 	local border = display.newRoundedRect(display.contentCenterX, display.contentCenterY + offset, 250, 200, 3)
-	border:setFillColor(28/255,28/255,26/255)
+	border:setFillColor(unpack(game.theme.bg))
 
 	local title = display.newText("Game Over", display.contentCenterX, border.y - 62.5, "media/Bungee-Regular.ttf" , 32)
+	title:setFillColor(unpack(game.theme.main))
 	local highscore = display.newText("", display.contentCenterX, border.y - 37.5, "media/Bungee-Regular.ttf" , 18)
+	highscore:setFillColor(unpack(game.theme.main))
 	if game.score > game.best then
 		game.best = game.score
 		highscore.text = "New Highscore!"
@@ -215,11 +221,11 @@ function game:lose()
 		shape = "roundedRect",
 		width = border.width - 37.5,
 		height = 40,
-		fillColor = {default = {1,1,1}, over = {0,0,0}},
+		fillColor = {default = {unpack(game.theme.main)}, over = {unpack(game.theme.sub)}},
 
 		font = "media/Bungee-Regular.ttf",
 		size = 64,
-        labelColor = {default={0,0,0}, over={0,0,0}}
+        labelColor = {default={unpack(game.theme.sub)}, over={unpack(game.theme.sub)}}
 	})
 	
 	local quit = widget.newButton({
@@ -232,11 +238,11 @@ function game:lose()
 		shape = "roundedRect",
 		width = border.width - 37.5,
 		height = 40,
-		fillColor = {default = {1,1,1}, over = {0,0,0}},
+		fillColor = {default = {unpack(game.theme.main)}, over = {unpack(game.theme.sub)}},
 
 		font = "media/Bungee-Regular.ttf",
 		size = 64,
-        labelColor = {default={0,0,0}, over={0,0,0}}
+        labelColor = {default={unpack(game.theme.sub)}, over={unpack(game.theme.sub)}}
 	})
 
 	game.pauseGroup = display.newGroup()

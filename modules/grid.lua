@@ -106,7 +106,7 @@ function grid:repopulate()
 	else
 		timer.performWithDelay(100 * (ctr + 1), function()
 			if grid:test() then
-				if grid.combo > 10000 then
+				if grid.combo > 200 then
 					sound:play("game")
 					reward.text()
 					grid.combo = 0
@@ -156,8 +156,6 @@ end
 function grid:powerups()
 	game.state = "POWERUPS"
 	for i = 1, #touch.powerups do
-		game.score = game.score + 10000
-		grid.combo = grid.combo + 10000
 		tile:activate(touch.powerups[i], false)
 	end
 
@@ -190,8 +188,8 @@ function grid:compute()
 			sound:play("pop")
 		end,
 		onComplete = function()
-			game:updateScore(100 * i)
-			grid.combo = grid.combo + (100 * i)
+			game:updateScore(10 * i)
+			grid.combo = grid.combo + (10 * i)
 			grid:clearDisabled(touch.points[i].xpos, touch.points[i].ypos)
 			grid[touch.points[i].xpos][touch.points[i].ypos]:removeSelf()
 			grid[touch.points[i].xpos][touch.points[i].ypos] = nil
@@ -227,9 +225,13 @@ function grid:compute()
 		time = 100,
 		onStart = function()
 			sound:play("startup")
+			grid[touch.points[i].xpos][touch.points[i].ypos].rect:setFillColor(unpack(game.theme.main))
+			grid[touch.points[i].xpos][touch.points[i].ypos].img:setFillColor(unpack(game.theme.sub))
+			game:shake(grid[touch.points[i].xpos][touch.points[i].ypos])
 		end,
 		onComplete = function()
-			grid[touch.points[i].xpos][touch.points[i].ypos].rect:setFillColor(0,1,0)
+			grid[touch.points[i].xpos][touch.points[i].ypos].rect:setFillColor(unpack(game.theme.sub))
+			grid[touch.points[i].xpos][touch.points[i].ypos].img:setFillColor(unpack(game.theme.main))
 			i = i + 1
 			if i > #touch.points then
 				timer.performWithDelay(150, function() grid:fall() end)

@@ -7,7 +7,7 @@ function scene:create( event )
     -- Code here runs when the scene is first created but has not yet appeared on screen
     --make background to hide menu
     local bg = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
-    bg:setFillColor(math.random(),math.random(),math.random())
+    bg:setFillColor(unpack(game.theme.bg))
 
     function bg.touch(event)
         if event.phase == "ended" and game.state == "GAME" then

@@ -4,10 +4,25 @@ Idea by Bri Tamasi, Eli Schoolar, and Guthrie Schoolar
 Developed by Guthrie Schoolar
 ]]--
 
---Headers
+--UI modules
+widget = require("widget")
+sound = require("modules.sound")
+theme = require("modules.theme")
+reward = require("modules.reward")
+
+--game controller modules
+game = require("modules.game")
+file = require("modules.file")
+hud = require("modules.hud")
+touch = require("modules.touch")
 composer = require("composer")
 json = require("json")
 
+
+--grid modules
+grid = require("modules.grid")
+tile = require("modules.tile")
+combination = require("modules.combination")
 bomb = require("modules.powerups.bomb")
 vertical = require("modules.powerups.vertical")
 horizontal = require("modules.powerups.horizontal")
@@ -16,19 +31,7 @@ evenOdd = require("modules.powerups.evenodd")
 zero = require("modules.powerups.zero")
 addtime = require("modules.powerups.addtime")
 
-grid = require("modules.grid")
-tile = require("modules.tile")
-game = require("modules.game")
-hud = require("modules.hud")
-touch = require("modules.touch")
-combination = require("modules.combination")
-widget = require("widget")
-file = require("modules.file")
-nanosvg = require( "plugin.nanosvg" )
-sound = require("modules.sound")
-
-reward = require("modules.reward")
-
+--adverstisements module
 revmob = require("plugin.revmob")
 revmob.id = "59a18e03986e9e3c25adcf69"
 revmob.banner = "59a19086986e9e3c25adcf79"
@@ -70,7 +73,9 @@ math.randomseed(os.time())
 --initalize sounds
 sound:init()
 
+--Graphical enhancement (I think?)
 display.setDefault("minTextureFilter", "nearest");
+
 --go to main menu
 firstLoad = true
 composer.gotoScene("scenes.scene_menu")

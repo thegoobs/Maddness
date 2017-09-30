@@ -8,7 +8,7 @@ function hud:create()
 
 	--game counter
 	hud.ctr = display.newText(game.ctr, display.contentCenterX, -100, "media/Bungee-Regular.ttf", 32)
-	hud.ctr:setFillColor(1,1,1)
+	hud.ctr:setFillColor(unpack(game.theme.main))
 	hud.ctr.id = "ctr"
 	hud.ctr.zero = false
 
@@ -16,6 +16,7 @@ function hud:create()
 	hud.score = display.newText("Score: " .. game.score, -15 + (display.contentCenterX / 4), (55 * game.rows + 80) + 140, "media/Bungee-Regular.ttf", 18)
 	hud.score.anchorX = 0
 	hud.score.id = "score"
+	hud.score:setFillColor(unpack(game.theme.main))
 
 	--pause button
 	hud.pause = widget.newButton({
@@ -28,11 +29,11 @@ function hud:create()
 		shape = "roundedRect",
 		width = 50,
 		height = 30,
-		fillColor = {default = {1,1,1}, over = {0,0,0}},
+		fillColor = {default = {unpack(game.theme.main)}, over = {unpack(game.theme.sub)}},
 
 		font = "media/Bungee-Regular.ttf",
 		size = 64,
-        labelColor = {default={0,0,0}, over={0,0,0}}
+        labelColor = {default={unpack(game.theme.sub)}, over={unpack(game.theme.sub)}}
 		})
 
 	hud.mute = widget.newButton({
@@ -45,17 +46,17 @@ function hud:create()
 		shape = "roundedRect",
 		width = 50,
 		height = 30,
-		fillColor = {default = {1,1,1}, over = {0,0,0}},
+		fillColor = {default = {unpack(game.theme.main)}, over = {unpack(game.theme.sub)}},
 
 		font = "media/Bungee-Regular.ttf",
 		size = 64,
-        labelColor = {default={0,0,0}, over={0,0,0}}
+        labelColor = {default={unpack(game.theme.sub)}, over={unpack(game.theme.sub)}}
 		})
 	hud.mute.image = display.newImage("media/sound.png", hud.mute.x, hud.mute.y)
 	hud.mute.image:scale(0.5, 0.5)
+	hud.mute.image:setFillColor(unpack(game.theme.sub))
 
 	if game.mode == "timeattack" then
-		print("ay")
 		hud.timer = display.newText("Time: " .. game.dt, 3 * display.contentWidth/4 - 27, (55 * game.rows + 80) + 140, "media/Bungee-Regular.ttf", 18)
 		hud.timer.anchorX = 0
 		hud.timer.block = display.newRect(hud.footer, -15 + (display.contentCenterX / 4), (55 * game.rows + 80) + 160, 275, 10)
@@ -159,11 +160,13 @@ function hud:tap(event)
 			game.mute = true
 			hud.mute.image:removeSelf()
 			hud.mute.image = display.newImage(hud.header, "media/mute.png", hud.mute.x, hud.mute.y)
+			hud.mute.image:setFillColor(unpack(game.theme.sub))
 			hud.mute.image:scale(0.5, 0.5)
 		else
 			game.mute = false
 			hud.mute.image:removeSelf()
 			hud.mute.image = display.newImage(hud.header, "media/sound.png", hud.mute.x, hud.mute.y)
+			hud.mute.image:setFillColor(unpack(game.theme.sub))
 			hud.mute.image:scale(0.5, 0.5)
 		end
 	end
