@@ -23,28 +23,60 @@ function file:save(filename)
 		local contents = json.encode(t)
 		file:write( contents )
 		io.close( file )
-		return true
-	else
-		return false
+	end
+end
+
+function file:saveStats()
+	local path = system.pathForFile("NuffinsGameInfo", system.DocumentsDirectory) --holds mute and highscore
+	local file = io.open(path, "w")
+
+	local s = {}
+	s.highscore = game.best
+	s.mute = game.mute
+	if file then
+		local contents = json.encode(s)
+		file:write(contents)
+		io.close(file)
 	end
 end
 
 function file:load(filename)
-	local path = system.pathForFile( filename, system.DocumentsDirectory)
-	local contents = ""
-	local t = {}
-	local file = io.open( path, "r" )
-	
-	if file then
-		-- read all contents of file into a string
-		local contents = file:read( "*a" )
-		t = json.decode(contents)
-		io.close( file )
-		if t ~= nil then
-			if t.grid[1][1] ~= nil then
-				return t
-			else
-				return nil
+	if filename == "savedata" then
+		local path = system.pathForFile( filename, system.DocumentsDirectory)
+		local contents = ""
+		local t = {}
+		local file = io.open( path, "r" )
+		
+		if file then
+			-- read all contents of file into a string
+			local contents = file:read( "*a" )
+			t = json.decode(contents)
+			io.close( file )
+			if t ~= nil then
+				if t.grid[1][1] ~= nil then
+					return t
+				else
+					return nil
+				end
+			end
+		end
+	elseif filename == "NuffinsGameInfo" then
+		local path = system.pathForFile( filename, system.DocumentsDirectory)
+		local contents = ""
+		local t = {}
+		local file = io.open( path, "r" )
+		
+		if file then
+			-- read all contents of file into a string
+			local contents = file:read( "*a" )
+			t = json.decode(contents)
+			io.close( file )
+			if t ~= nil then
+				if t.best ~= 0 then
+					return t
+				else
+					return nil
+				end
 			end
 		end
 	end

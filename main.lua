@@ -72,4 +72,5 @@ sound:init()
 
 display.setDefault("minTextureFilter", "nearest");
 --go to main menu
+firstLoad = true
 composer.gotoScene("scenes.scene_menu")

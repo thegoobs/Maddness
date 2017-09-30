@@ -37,7 +37,25 @@ function scene:create(event)
 
     local title = display.newText(g, "Nuffins", display.contentCenterX, 100, "media/Bungee-Regular.ttf" , 48)
     local subtitle = display.newText(g, "Swipe, add, win", display.contentCenterX, 135, "media/Bungee-Regular.ttf" , 16)
-     endless = widget.newButton({
+    local highscore = display.newText(g, "", display.contentCenterX, 150, "media/Bungee-Regular.ttf" , 16)
+
+    local s = {}
+    if firstLoad == true then
+        s = file:load("NuffinsGameInfo")
+        firstLoad = false
+    end
+
+    if s.highscore ~= nil then
+        game.mute = s.mute
+        game.best = s.highscore
+    end
+
+    if game.best > 0 then
+        highscore.text = "Highscore: " .. game.best
+    end
+
+--BUTTONS
+    endless = widget.newButton({
         id = "endless",
         label = "Play!",
         x = display.contentCenterX,

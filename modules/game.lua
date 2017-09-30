@@ -1,6 +1,7 @@
 local game = {}
 game.state = "NOT GAME"
 game.score = 0
+game.best = 0
 game.ctr = 0
 game.group = display.newGroup()
 game.rows = 5
@@ -93,6 +94,8 @@ function game:system(event)
 		print("whoops")
 	elseif event.type == "applicationExit" and game.state == "GAME" then
 		file:save("savedata")
+	elseif event.type == "applicationExit" and game.state ~= "GAME" then
+		file:saveStats()
 	end
 
 end
@@ -194,7 +197,14 @@ function game:lose()
 	local border = display.newRoundedRect(display.contentCenterX, display.contentCenterY + offset, 250, 200, 3)
 	border:setFillColor(28/255,28/255,26/255)
 
-	local title = display.newText("Game Over", display.contentCenterX, border.y - 50, "media/Bungee-Regular.ttf" , 32)
+	local title = display.newText("Game Over", display.contentCenterX, border.y - 62.5, "media/Bungee-Regular.ttf" , 32)
+	local highscore = display.newText("", display.contentCenterX, border.y - 37.5, "media/Bungee-Regular.ttf" , 18)
+	if game.score > game.best then
+		game.best = game.score
+		highscore.text = "New Highscore!"
+		file:saveStats()
+	end
+
 	local retry = widget.newButton({
 		id = "retry",
 		label = "Retry",
@@ -232,6 +242,7 @@ function game:lose()
 	game.pauseGroup = display.newGroup()
 	game.pauseGroup:insert(border)
 	game.pauseGroup:insert(title)
+	game.pauseGroup:insert(highscore)
 	game.pauseGroup:insert(retry)
 	game.pauseGroup:insert(quit)
 	transition.to(game.pauseGroup, {time = 600, y = -1 * offset, transition = easing.outBack})
@@ -250,6 +261,7 @@ function game:lose()
 			sound:play("button")
 			game:unpause()
 			file:remove("savedata")
+			file:saveStats()
 			composer.gotoScene("scenes.scene_menu")
 			return true
 		end

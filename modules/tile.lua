@@ -61,6 +61,7 @@ function tile:create(xpos, ypos)
 			t.powerup = game.save.grid[xpos][ypos].powerup
 			t.url = game.save.grid[xpos][ypos].url
 			t.img = display.newImage(t, t.url, t.rect.x, t.rect.y)
+			t.img:scale(0.5,0.5)
 			t.color = game.save.grid[xpos][ypos].color
 			t.rect:setFillColor(unpack(game.save.grid[xpos][ypos].color))
 
