@@ -4,8 +4,14 @@ function vertical:animate(xpos, ypos)
 	--make a thing to animate
 	local x = -5 + 55 * xpos
 	local anim = display.newGroup()
-	local top = display.newRect(anim, x, grid.center.y, 50, 50)
-	local bot = display.newRect(anim, x, grid.center.y, 50, 50)
+	local top = display.newImage(anim, "media/powerup_blast.png", x, grid.center.y)
+	top:scale(0.5,0.5)
+	local bot = display.newImage(anim, "media/powerup_blast.png", x, grid.center.y)
+	bot:scale(0.5,0.5)
+	bot:rotate(180)
+
+	top:setFillColor(unpack(game.theme.main))
+	bot:setFillColor(unpack(game.theme.main))
 
 	local function destroy()
 		anim:removeSelf()
@@ -14,9 +20,9 @@ function vertical:animate(xpos, ypos)
 		bot = nil
 	end
 	--animate to go across screen
-	transition.to(top, {time = 250, y = grid.top})
-	transition.to(bot, {time = 250, y = grid.bottom})
-	transition.to(anim, {time = 500, alpha = 0.25, onComplete=destroy})
+	transition.to(top, {time = 200, y = grid.top})
+	transition.to(bot, {time = 200, y = grid.bottom})
+	transition.to(anim, {time = 350, alpha = 0.25, onComplete=destroy})
 end
 
 function vertical:activate(t) --t for tile

@@ -15,22 +15,24 @@ function scene:create( event )
             return true
         end
     end
+
     bg:addEventListener("touch", bg.touch)
     
 
+    transition.to(howTo, {time = 500, y = display.contentCenterY + 115, transition = easing.outBack})
+    transition.to(howTo.label, {time = 500, y = display.contentCenterY + 115, transition = easing.outBack})
     game:start()
     game:makeGroup()
     
-    if revmob.isLoaded(revmob.banner) then
-        revmob.show( revmob.banner, { yAlign="bottom" } )
+    if appodeal.isLoaded("banner") then
+        timer.performWithDelay(500, appodeal.show("banner", {yAlign="bottom"}))
     else
-        revmob.load(revmob.banner)
-        revmob.show(revmob.banner, {yAlign="bottom"})
+        appodeal.load("banner")
+        timer.performWithDelay(500, function() appodeal.show("banner", {yAlign="bottom"}) end)
     end
 
     sceneGroup:insert(game.group)
 end
- 
 
 function scene:show( event )
  
@@ -52,7 +54,8 @@ function scene:hide( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is on screen (but is about to go off screen)
-
+        transition.to(howTo, {time = 500, y = display.contentHeight - 40, transition = easing.outBack})
+        transition.to(howTo.label, {time = 500, y = display.contentHeight - 40, transition = easing.outBack})
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
         composer.removeScene("scenes.scene_game")
@@ -66,7 +69,7 @@ function scene:destroy( event )
     local sceneGroup = self.view
     -- Code here runs prior to the removal of scene's view
     game:remove()
-    revmob.hide(revmob.banner)
+    appodeal.hide("banner")
 end
  
  

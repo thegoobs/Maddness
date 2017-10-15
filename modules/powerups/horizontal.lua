@@ -4,9 +4,16 @@ function horizontal:animate(xpos, ypos)
 	--make a thing to animate
 	local y = -20 + 55 * (ypos + 1)
 	local anim = display.newGroup()
-	local left = display.newRect(anim, display.contentCenterX, y, 50, 50)
-	local right = display.newRect(anim, display.contentCenterX, y, 50, 50)
+	local left = display.newImage(anim, "media/powerup_blast.png", display.contentCenterX, y)
+	local right = display.newImage(anim, "media/powerup_blast.png", display.contentCenterX, y)
+	left:setFillColor(unpack(game.theme.main))
+	right:setFillColor(unpack(game.theme.main))
 
+	left:scale(0.5,0.5)
+	right:scale(0.5,0.5)
+
+	left:rotate(-90)
+	right:rotate(90)
 	local function destroy()
 		anim:removeSelf()
 		anim = nil
@@ -14,9 +21,9 @@ function horizontal:animate(xpos, ypos)
 		right = nil
 	end
 	--animate to go across screen
-	transition.to(left, {time = 250, x = grid.left})
-	transition.to(right, {time = 250, x = grid.right})
-	transition.to(anim, {time = 500, alpha = 0.25, onComplete=destroy})
+	transition.to(left, {time = 200, x = grid.left})
+	transition.to(right, {time = 200, x = grid.right})
+	transition.to(anim, {time = 350, alpha = 0.25, onComplete=destroy})
 end
 
 function horizontal:activate(t) --to for tile

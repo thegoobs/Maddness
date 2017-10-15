@@ -55,6 +55,7 @@ function tile:create(xpos, ypos)
 		t.disabled = game.save.grid[xpos][ypos].disabled
 		if t.disabled == true then
 			alphaSave = 0.5
+			t.rect:setFillColor(unpack(game.theme.sub))
 		end
 
 		if t.val == 0 then
@@ -64,7 +65,9 @@ function tile:create(xpos, ypos)
 			t.img:scale(0.5,0.5)
 			t.rect:setFillColor(unpack(game.theme.main))
 			t.img:setFillColor(unpack(game.theme.sub))
-
+			if t.disabled == true then
+				t.img:setFillColor(unpack(game.theme.main))
+			end
 		end
 	end
 
@@ -72,6 +75,9 @@ function tile:create(xpos, ypos)
 	if t.powerup == false or t.powerup == "evenOdd" then
 		t.text = display.newText(t, t.val, -5 + 55 * xpos, -15 + 55 * ypos, "media/Bungee-Regular.ttf", 20)
 		t.text:setFillColor(unpack(game.theme.sub))
+		if t.disabled == true then
+			t.text:setFillColor(unpack(game.theme.main))
+		end
 	end
 
 	--enable conditional variables

@@ -8,7 +8,10 @@ function bomb:animate(t, neighbors)
 	for i = 1, #neighbors do
 		if neighbors[i].powerup == false then
 			local xpos, ypos = neighbors[i].rect:localToContent(0, 0)
-			particles[i] = display.newRect(anim, tx, ty, 50, 50)
+			particles[i] = display.newImage(anim, "media/bomb_smoke.png", tx, ty)
+			particles[i]:scale(0.5, 0.5)
+			particles[i]:rotate(math.random() * 360)
+			particles[i]:setFillColor(unpack(game.theme.main))
 			transition.to(particles[i], {time = 150, x = xpos, y = ypos})
 		end
 	end
@@ -19,7 +22,7 @@ function bomb:animate(t, neighbors)
 		particles = {}	
 	end
 
-	transition.to(anim, {time = 300, alpha = 0, onComplete = destroy})
+	transition.to(anim, {time = 300, alpha = 0.25, onComplete = destroy})
 
 	-- --shake grid
 	for i = 1, game.columns do

@@ -52,7 +52,11 @@ function hud:create()
 		size = 64,
         labelColor = {default={unpack(game.theme.sub)}, over={unpack(game.theme.sub)}}
 		})
-	hud.mute.image = display.newImage("media/sound.png", hud.mute.x, hud.mute.y)
+	if game.mute == false then
+		hud.mute.image = display.newImage("media/sound.png", hud.mute.x, hud.mute.y)
+	else
+		hud.mute.image = display.newImage("media/mute.png", hud.mute.x, hud.mute.y)
+	end
 	hud.mute.image:scale(0.5, 0.5)
 	hud.mute.image:setFillColor(unpack(game.theme.sub))
 
@@ -169,6 +173,7 @@ function hud:tap(event)
 			hud.mute.image:setFillColor(unpack(game.theme.sub))
 			hud.mute.image:scale(0.5, 0.5)
 		end
+		print(game.mute)
 	end
 end
 

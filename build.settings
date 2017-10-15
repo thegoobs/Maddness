@@ -20,7 +20,10 @@ settings =
 	{
 		usesPermissions =
 		{
-			"android.permission.INTERNET",
+            "android.permission.INTERNET",
+            "android.permission.ACCESS_NETWORK_STATE",
+            "android.permission.ACCESS_COARSE_LOCATION",
+            "android.permission.WRITE_EXTERNAL_STORAGE"
 		},
 	},
 
@@ -29,22 +32,12 @@ settings =
 	--
 	iphone =
 	{
+		xcassets = "Images.xcassets",
 		plist =
 		{
+			MinimumOSVersion = "8.0",
 			UIStatusBarHidden = false,
 			UILaunchStoryboardName = "LaunchScreen",
-			CFBundleIconFiles =
-			{
-				"icons/Icon-40.png",
-				"icons/Icon-58.png",
-				"icons/Icon-76.png",
-				"icons/Icon-80.png",
-				"icons/Icon-87.png",
-				"icons/Icon-120.png",
-				"icons/Icon-152.png",
-				"icons/Icon-167.png",
-				"icons/Icon-180.png",
-			},
 			NSAppTransportSecurity = { NSAllowsArbitraryLoads=true }
 		},
 	},
@@ -54,16 +47,11 @@ settings =
 	--
 	plugins =
 	{
-	
-        ["plugin.revmob"] =
+		["plugin.appodeal"] =
         {
             publisherId = "com.coronalabs"
         },
 
-        ["plugin.nanosvg"] =
-        {
-            publisherId = "com.coronalabs"
-        }
 	},
 
 	--
@@ -72,7 +60,7 @@ settings =
 	excludeFiles =
 	{
 		-- Exclude unnecessary files for each platform
-		ios = { "icons/Icon.png", "icons/Icon-*dpi.png", },
-		android = { "icons/Icon.png", "icons/Icon-??.png", "icons/Icon-???.png", "LaunchScreen.storyboardc", },
+		ios = { "Icon.png", "Icon-*dpi.png", },
+		android = {"LaunchScreen.storyboardc", },
 	},
 }

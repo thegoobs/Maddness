@@ -1,5 +1,5 @@
 --[[
-Nuffins
+Addness
 Idea by Bri Tamasi, Eli Schoolar, and Guthrie Schoolar
 Developed by Guthrie Schoolar
 ]]--
@@ -32,37 +32,36 @@ zero = require("modules.powerups.zero")
 addtime = require("modules.powerups.addtime")
 
 --adverstisements module
-revmob = require("plugin.revmob")
-revmob.id = "59a18e03986e9e3c25adcf69"
-revmob.banner = "59a19086986e9e3c25adcf79"
-revmob.int = "59a1957a2fdd190df62523bc"
---initialize RevMob ad service
+appodeal = require( "plugin.appodeal" )
+
+--initialize appodeal ad service
 
 local function adListener( event )
-  
-    if ( event.phase == "sessionStarted" ) then  -- Successful initialization
-        -- Load a RevMob ad
-        revmob.load("banner", revmob.banner)
-        revmob.load("interstitial", revmob.int)
- 
-    elseif ( event.phase == "loaded" ) then  -- The ad was successfully loaded
-        print( event.type )
- 
+
+    -- Exit function if user hasn't set up testing parameters
+    if ( setupComplete == false ) then return end
+
+    if ( event.phase == "loaded" ) then  -- The ad was successfully loaded
+        print( event.type)
     elseif ( event.phase == "failed" ) then  -- The ad failed to load
-        print( event.type )
+        print( event.type)
         print( event.isError )
         print( event.response )
-    elseif (event.phase == "hidden") then
-    	if event.type == "banner" then
-	    	revmob.load(event.type, revmob.banner)
-	    elseif event.type == "interstitial" then
-	    	revmob.load(event.type, revmob.int)
-	    end
+    end
+
+    if ( event.phase == "init" ) then  -- Successful initialization
+        print( event.isError )
     end
 end
  
--- Initialize RevMob
-revmob.init( adListener, { appId=revmob.id } )
+-- Initialize appodeal
+if system.getInfo("platform") == "ios" then
+    appodeal.id = "a961908b210dcf1378a57291c32149b823cc4b2e88ca53d4"
+else
+    appodeal.id = "fb751c6a5903872881dc5bfbd64d956b01b59495e0c61b58"
+end
+
+appodeal.init( adListener, { appKey=appodeal.id } )
 
 --setup system check whether or not game becomes suspended or not
 Runtime:addEventListener("system", game)

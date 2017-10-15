@@ -27,12 +27,20 @@ function file:save(filename)
 end
 
 function file:saveStats()
-	local path = system.pathForFile("NuffinsGameInfo", system.DocumentsDirectory) --holds mute and highscore
+	local path = system.pathForFile("MaddnessGameInfo", system.DocumentsDirectory) --holds mute and highscore
 	local file = io.open(path, "w")
 
 	local s = {}
 	s.highscore = game.best
 	s.mute = game.mute
+	s.theme_index = game.theme_index
+	s.firstTime = game.firstTime
+	
+	--get whether themes have been used
+	s.theme = {}
+	for i = 1, #theme do
+		s.theme[i] = theme[i].used
+	end
 	if file then
 		local contents = json.encode(s)
 		file:write(contents)
@@ -60,7 +68,7 @@ function file:load(filename)
 				end
 			end
 		end
-	elseif filename == "NuffinsGameInfo" then
+	elseif filename == "MaddnessGameInfo" then
 		local path = system.pathForFile( filename, system.DocumentsDirectory)
 		local contents = ""
 		local t = {}

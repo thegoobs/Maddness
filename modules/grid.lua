@@ -61,9 +61,9 @@ function grid:fall()
 						grid[i][j].ypos = j
 
 						local x, y = grid[i][j]:localToContent(0, 0)
-						if maxtime < 200 + 100 * (game.rows - j) then maxtime = 200 + 100 * (game.rows - j) end
+						if maxtime < 125 + 100 * (game.rows - j) then maxtime = 125 + 100 * (game.rows - j) end
 						ctr = ctr + 1
-						transition.to(grid[i][j], {time = 200 + 100 * (j - k) + 40*ctr, y = y + 55 * (j - k), transition = easing.inSine,
+						transition.to(grid[i][j], {time = 125 + 100 * (j - k) + 40*ctr, y = y + 55 * (j - k), transition = easing.inSine,
 							onComplete = function()
 								sound:play("select")
 							end})
@@ -93,26 +93,34 @@ function grid:repopulate()
 			for j = 1, game.rows do
 			if grid[i][j] ~= nil then break end
 			ctr = ctr + 1
-			timer.performWithDelay(80 * ctr, function() grid[i][j] = tile:create(i, j) sound:play("fall") end)
+			timer.performWithDelay(75 * ctr, function() grid[i][j] = tile:create(i, j) sound:play("fall") end)
 		end
 	end
 
 	touch.points = {}
 	grid.lastTouched = nil
 	if game.state == "REPOPULATE" then
-		timer.performWithDelay(125 * (ctr + 1), function()
+		timer.performWithDelay(100 * (ctr + 1), function()
 			grid:powerups()
 		end)
 	else
-		timer.performWithDelay(100 * (ctr + 1), function()
+		timer.performWithDelay(75 * (ctr + 1), function()
 			if grid:test() then
-				if grid.combo > 200 then
-					sound:play("game")
+				if grid.combo >= 100 then --if used more than 4 tiles or a powerup
+					sound:play("game") --put this in reward tiers once sounds are final
 					reward.text()
 					grid.combo = 0
 				else
 					grid.combo = 0
 					game.state = "GAME"
+				end
+
+				--update tile min and max based on score
+				if game.score > game.ciel then
+					game.max = game.max + math.floor(game.score/game.ciel)
+					game.min = game.max * -1
+
+					game.ciel = game.ciel + 10000
 				end
 			end
 		end)
@@ -193,7 +201,12 @@ function grid:compute()
 
 	if #touch.points == 1 and touch.points[1].val ~= 0 then
 
-		touch.points[1].rect:setFillColor(1,1,1)
+		touch.points[1].rect:setFillColor(unpack(game.theme.main))
+		if touch.points[1].img ~= nil then
+			touch.points[1].img:setFillColor(unpack(game.theme.sub))
+		else
+			touch.points[1].text:setFillColor(unpack(game.theme.sub))
+		end
 		touch.points[1].selected = false
 		touch.points = {}
 		game.ctr = 0
@@ -202,7 +215,7 @@ function grid:compute()
 	end
 
 	local success = {
-		time = 100,
+		time = 85,
 		alpha = 0,
 		onStart = function()
 			sound:play("pop")
@@ -222,7 +235,7 @@ function grid:compute()
 	}
 
 	local fail = {
-		time = 100,
+		time = 85,
 		alpha = 0.5,
 		onComplete = function()
 		sound:play("disable")
@@ -234,9 +247,8 @@ function grid:compute()
 				touch.points = {}
 				game.ctr = 0
 				grid.lastTouched = nil
-				game.state = "GAME"
 				touch.powerups = {}
-				timer.performWithDelay(1000, function() grid:test() end)
+				timer.performWithDelay(100, function() grid:test() end)
 			end
 		end
 	}
@@ -277,11 +289,14 @@ function grid:compute()
 end
 
 function grid:test()
+	game.state = "TEST"
+
 	for i = 1, game.columns do
 		for j = 1, game.rows do
 			--print("starting at: " .. i .. " " .. j .. " is it disabled? " .. tostring(grid[i][j].disabled))
 			if grid[i][j].disabled == false then
 				if combination:findzero(i, j, 0) == true then
+					game.state = "GAME"
  					return true
  				end
  			end
